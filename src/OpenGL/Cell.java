@@ -8,6 +8,10 @@ package OpenGL;
  */
 
 public class Cell implements GUIElement {
+    private int x;
+    private int y;
+    private Sprite tile;
+
     @Override
     public int getWidth() {
         return 0;
@@ -20,17 +24,17 @@ public class Cell implements GUIElement {
 
     @Override
     public int getY() {
-        return 0;
+        return y;
     }
 
     @Override
     public int getX() {
-        return 0;
+        return x;
     }
 
     @Override
     public Sprite getSprite() {
-        return null;
+        return tile;
     }
 
     @Override
