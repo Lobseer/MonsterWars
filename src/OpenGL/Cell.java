@@ -1,4 +1,8 @@
 package OpenGL;
+import static OpenGL.Constants.*;
+import api.model.Character;
+import api.model.monster.Movable;
+import impl.model.BaseCharacter;
 
 /**
  * Class description
@@ -11,15 +15,32 @@ public class Cell implements GUIElement {
     private int x;
     private int y;
     private Sprite tile;
+    private BaseCharacter mob;
+
+    public Cell() {
+        this(0, 0, Sprite.GRASS);
+    }
+
+    public Cell(int x, int y, Sprite tile) {
+        this.x = x;
+        this.y = y;
+        this.tile = tile;
+    }
+
+    public void putCharacter(BaseCharacter bc) {
+        if(bc!=null) {
+            mob = bc;
+        }
+    }
 
     @Override
     public int getWidth() {
-        return 0;
+        return CELL_SIZE;
     }
 
     @Override
     public int getHeight() {
-        return 0;
+        return CELL_SIZE;
     }
 
     @Override
@@ -37,8 +58,4 @@ public class Cell implements GUIElement {
         return tile;
     }
 
-    @Override
-    public int receiveClick(int x, int y, int button) {
-        return 0;
-    }
 }

@@ -10,7 +10,7 @@ package OpenGL;
 public class Constants {
     ///Размер игровой ячейки
     public static final int CELL_SIZE = 32;
-    public static final int CELL_MARGIN = 2;
+    public static final int CELL_MARGIN = 0;
 
     ///Размеры игрового поля в ячейках
     public static final int CELLS_COUNT_X = 30;

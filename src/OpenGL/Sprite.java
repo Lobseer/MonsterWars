@@ -16,7 +16,8 @@ public enum Sprite {
     ///Файлы с именами circle и cherries должны лежать по адресу
     /// %папка проекта%/res/ в расширении .png
     GRASS("tile_grass"), WATER("tile_water"), MOUNTAIN("tile_mountain"),
-    SPAWN1("tile_spawn_monster_1"), SPAWN2("ttile_spawn_monster_2"), SPAWN3("tile_spawn_monster_3");
+    SPAWN1("tile_spawn_monster_1"), SPAWN2("tile_spawn_monster_2"), SPAWN3("tile_spawn_monster_3"),
+    MONSTER("monster"), SKELET("skelet");
 
     private Texture texture;
 

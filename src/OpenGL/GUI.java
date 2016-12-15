@@ -1,7 +1,21 @@
 package OpenGL;
 
+import api.model.Character;
+import api.model.monster.Monster;
+import api.model.monster.Movable;
+import api.service.GameService;
+import impl.model.BaseCharacter;
+import impl.model.monster.BaseMonster;
+import impl.model.monster.Pig;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.DisplayMode;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 import static OpenGL.Constants.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -19,7 +33,52 @@ public class GUI {
     //Cell -- класс, который реализует GUIElement; им займёмся немного позже
     private static Cell[][] cells;
 
-    private static void initializeOpenGL(){
+    private Character userChar;
+    private List<BaseMonster> monsters = new ArrayList<>();
+
+    public void init(){
+        initializeOpenGL();
+        Random rnd = new Random();
+        cells = new Cell[CELLS_COUNT_X][CELLS_COUNT_Y];
+        for(int i=0; i < CELLS_COUNT_X; i++)
+            for(int j=0; j < CELLS_COUNT_Y; j++) {
+                cells[i][j] = new Cell(i*CELL_SIZE, j*CELL_SIZE, Sprite.GRASS);
+            }
+        BaseMonster pig = new Pig();
+        pig.moveTo(new Point(rnd.nextInt(CELLS_COUNT_X), rnd.nextInt(CELLS_COUNT_Y)));
+        new Thread(pig).start();
+
+        BaseMonster pig2 = new Pig();
+        pig2.moveTo(new Point(rnd.nextInt(CELLS_COUNT_X), rnd.nextInt(CELLS_COUNT_Y)));
+        new Thread(pig2).start();
+
+        BaseMonster pig3 = new Pig();
+        pig3.moveTo(new Point(rnd.nextInt(CELLS_COUNT_X), rnd.nextInt(CELLS_COUNT_Y)));
+        new Thread(pig3).start();
+
+        monsters.add(pig);
+        monsters.add(pig2);
+        monsters.add(pig3);
+    }
+    //Этот метод будет вызываться извне
+    public void update() {
+        //Random r = new Random();
+        for(int i = 0; i < monsters.size(); i++) {
+            Point mPos = (monsters.get(i)).getPosition();
+            cells[mPos.x][mPos.y].putCharacter(monsters.get(i));
+        }
+
+        updateOpenGL();
+    }
+
+    //А этот метод будет использоваться только локально,
+    // т.к. базовым другие классы должны работать на более высоком уровне
+    private void updateOpenGL() {
+        Display.update();
+        Display.sync(60);
+    }
+
+    private void initializeOpenGL(){
         try {
             //Задаём размер будущего окна
             Display.setDisplayMode(new DisplayMode(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -56,20 +115,8 @@ public class GUI {
         glClearColor(1,1,1,1);
     }
 
-    //Этот метод будет вызываться извне
-    public static void update() {
-        updateOpenGL();
-    }
-
-    //А этот метод будет использоваться только локально,
-    // т.к. базовым другие классы должны работать на более высоком уровне
-    private static void updateOpenGL() {
-        Display.update();
-        Display.sync(60);
-    }
-
     ///Рисует все клетки
-    public static void draw(){
+    public void draw(){
         ///Очищает экран от старого изображения
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -78,12 +125,13 @@ public class GUI {
                 drawElement(cell);
             }
         }
+        for(GUIElement mob : monsters) {
+            drawElement(mob);
+        }
     }
 
     ///Рисует элемент, переданный в аргументе
-    private static void drawElement(GUIElement elem){
-
-
+    private void drawElement(GUIElement elem){
         elem.getSprite().getTexture().bind();
 
         glBegin(GL_QUADS);
@@ -98,11 +146,11 @@ public class GUI {
         glEnd();
     }
 
-    public static void init(){
-        initializeOpenGL();
+    public Character getUserCharacter() {
+        return userChar;
+    }
 
-        ///Классом генератора мы займёмся чуть позже. Пока можно просто
-        ///создать его, вместе с пустым методом generate
-        //this.cells = Generator.generate();
+    public List<BaseMonster> getsMonsters() {
+        return monsters;
     }
 }

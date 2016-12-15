@@ -19,7 +19,7 @@ public interface GUIElement {
 
     Sprite getSprite(); ///Создадим enum с таким именем, заполним позже
 
-    int receiveClick(int x, int y, int button); /// Возвращаем результат клика
+    //int receiveClick(int x, int y, int button); /// Возвращаем результат клика
     ///Параметр button определяет кнопку мыши, которой был сделан щелчок.
 
     /// Здесь используется фишка Java 8 --- default методы в интерфейсах.

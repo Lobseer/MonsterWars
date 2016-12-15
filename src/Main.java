@@ -1,6 +1,8 @@
 import OpenGL.Cell;
 import OpenGL.GUI;
 import OpenGL.GUIElement;
+import api.service.GameService;
+// impl.service.GameServiceImpl;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -10,12 +12,20 @@ public class Main {
     private static boolean end_of_game=false;
 
     public static void main(String[] args) {
-        GUI.init();
-        Cell c = new Cell();
+        GUI game = new GUI();
+        game.init();
+
+        //GameService gameService = new GameServiceImpl();
+
+        //for(int i = 0; i < 50; i++) {
+        //    System.out.println("-----------Step " + i + "-----------");
+        //    gameService.calculateNextStep();
+        //}
+
         while(!end_of_game){
             input();
-            GUI.update();
-            //GUI.draw();
+            game.update();
+            game.draw();
         }
     }
 
