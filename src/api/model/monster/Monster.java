@@ -7,5 +7,6 @@ import api.model.Character;
  */
 public interface Monster extends Character{
     void attack(Character character);
-    int getAttackDistance();
+    int getAggressionDistance();
+
 }

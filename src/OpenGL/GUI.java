@@ -1,21 +1,11 @@
 package OpenGL;
 
-import api.model.Character;
-import api.model.monster.Monster;
-import api.model.monster.Movable;
 import api.service.GameService;
-import impl.model.BaseCharacter;
-import impl.model.monster.BaseMonster;
-import impl.model.monster.Pig;
+
+import impl.service.GameServiceImpl;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
 
 import static OpenGL.Constants.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -29,56 +19,27 @@ import static org.lwjgl.opengl.GL11.*;
  */
 
 public class GUI {
-    ///CELLS_COUNT_X и CELLS_COUNT_Y -- константы
-    //Cell -- класс, который реализует GUIElement; им займёмся немного позже
-    private static Cell[][] cells;
+    private static GameService gameLogic;
 
-    private Character userChar;
-    private List<BaseMonster> monsters = new ArrayList<>();
-
-    public void init(){
+    public static void init(){
         initializeOpenGL();
-        Random rnd = new Random();
-        cells = new Cell[CELLS_COUNT_X][CELLS_COUNT_Y];
-        for(int i=0; i < CELLS_COUNT_X; i++)
-            for(int j=0; j < CELLS_COUNT_Y; j++) {
-                cells[i][j] = new Cell(i*CELL_SIZE, j*CELL_SIZE, Sprite.GRASS);
-            }
-        BaseMonster pig = new Pig();
-        pig.moveTo(new Point(rnd.nextInt(CELLS_COUNT_X), rnd.nextInt(CELLS_COUNT_Y)));
-        new Thread(pig).start();
-
-        BaseMonster pig2 = new Pig();
-        pig2.moveTo(new Point(rnd.nextInt(CELLS_COUNT_X), rnd.nextInt(CELLS_COUNT_Y)));
-        new Thread(pig2).start();
-
-        BaseMonster pig3 = new Pig();
-        pig3.moveTo(new Point(rnd.nextInt(CELLS_COUNT_X), rnd.nextInt(CELLS_COUNT_Y)));
-        new Thread(pig3).start();
-
-        monsters.add(pig);
-        monsters.add(pig2);
-        monsters.add(pig3);
+        gameLogic = new GameServiceImpl();
     }
-    //Этот метод будет вызываться извне
-    public void update() {
-        //Random r = new Random();
-        for(int i = 0; i < monsters.size(); i++) {
-            Point mPos = (monsters.get(i)).getPosition();
-            cells[mPos.x][mPos.y].putCharacter(monsters.get(i));
-        }
 
+    //Этот метод будет вызываться извне
+    public static void update() {
+        gameLogic.update();
         updateOpenGL();
     }
 
     //А этот метод будет использоваться только локально,
     // т.к. базовым другие классы должны работать на более высоком уровне
-    private void updateOpenGL() {
+    private static void updateOpenGL() {
         Display.update();
         Display.sync(60);
     }
 
-    private void initializeOpenGL(){
+    private static void initializeOpenGL(){
         try {
             //Задаём размер будущего окна
             Display.setDisplayMode(new DisplayMode(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -116,41 +77,34 @@ public class GUI {
     }
 
     ///Рисует все клетки
-    public void draw(){
+    public static void draw(){
         ///Очищает экран от старого изображения
         glClear(GL_COLOR_BUFFER_BIT);
 
-        for(GUIElement[] line : cells){
-            for(GUIElement cell:line){
+        for(GUIElement[] line : gameLogic.getCells()){
+            for(GUIElement cell : line){
                 drawElement(cell);
             }
         }
-        for(GUIElement mob : monsters) {
+        for(GUIElement mob : gameLogic.getMonsters()) {
             drawElement(mob);
         }
     }
 
     ///Рисует элемент, переданный в аргументе
-    private void drawElement(GUIElement elem){
+    private static void drawElement(GUIElement elem){
         elem.getSprite().getTexture().bind();
 
         glBegin(GL_QUADS);
         glTexCoord2f(0,0);
-        glVertex2f(elem.getX(),elem.getY()+elem.getHeight());
+        glVertex2f(elem.getRenderX(),elem.getRenderY()+elem.getHeight());
         glTexCoord2f(1,0);
-        glVertex2f(elem.getX()+elem.getWidth(),elem.getY()+elem.getHeight());
+        glVertex2f(elem.getRenderX()+elem.getWidth(),elem.getRenderY()+elem.getHeight());
         glTexCoord2f(1,1);
-        glVertex2f(elem.getX()+elem.getWidth(), elem.getY());
+        glVertex2f(elem.getRenderX()+elem.getWidth(), elem.getRenderY());
         glTexCoord2f(0,1);
-        glVertex2f(elem.getX(), elem.getY());
+        glVertex2f(elem.getRenderX(), elem.getRenderY());
         glEnd();
     }
 
-    public Character getUserCharacter() {
-        return userChar;
-    }
-
-    public List<BaseMonster> getsMonsters() {
-        return monsters;
-    }
 }

@@ -8,6 +8,6 @@ import java.awt.*;
 public interface Movable {
     void moveTo(Point point);
     boolean canMoveTo(Point point);
-    float getSpeed();
+    float getMoveSpeed();
     Point getPosition();
 }

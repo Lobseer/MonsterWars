@@ -1,21 +1,24 @@
 package impl.service;
-/*
-import api.model.Character;
-import api.model.monster.Monster;
-import api.model.monster.Movable;
-import api.service.GameService;
-import impl.model.monster.FlyPig;
-import impl.model.monster.Pig;
-import impl.model.user.Angel;
-import impl.model.user.Warrior;
 
+import OpenGL.Cell;
+import OpenGL.Sprite;
+import api.model.Character;
+import api.model.monster.*;
+import api.service.GameService;
+import impl.model.monster.*;
+
+import javax.annotation.processing.Processor;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import static OpenGL.Constants.*;
 
 /**
  * Created by denis.selutin on 5/29/2015.
  */
-/*
+
 public class GameServiceImpl implements GameService {
 
     private static final int ANGEL_POWER = 50;
@@ -26,9 +29,69 @@ public class GameServiceImpl implements GameService {
     private static final int WARRIOR_MOVE_DISTANCE = 8;
     private static final int WARRIOR_ATTACK_DISTANCE  = 5;
     private static final int WARRIOR_HEALTH = 500;
-    private static final int MAX_MONSTERS = 5;
+    private static final int MAX_MONSTERS = 15;
     private static final int MAX_MOVE_LENGTH = 2;
 
+    private Cell[][] cells;
+    private Character userChar;
+    private List<BaseMonster> monsters = new ArrayList<>();
+
+    public GameServiceImpl() {
+        worldGen();
+        generateRandomMonsters(15);
+    }
+
+    public GameServiceImpl(Character player) {
+        worldGen();
+        userChar = player;
+        generateRandomMonsters(MAX_MONSTERS);
+    }
+
+    private void worldGen() {
+        Random rnd = new Random();
+        cells = new Cell[CELLS_COUNT_X][CELLS_COUNT_Y];
+        for (int i = 0; i < CELLS_COUNT_X; i++)
+            for (int j = 0; j < CELLS_COUNT_Y; j++) {
+                cells[i][j] = new Cell(i, j, Sprite.MOUNTAIN);
+            }
+    }
+
+    private <T extends BaseMonster> void generateRandomMonsters(int count) {
+        Random rnd = new Random();
+        BaseMonster monster;
+        for(int i=0; i<count; i++) {
+            if(rnd.nextInt(100)>50)
+                monster = new Pig(10, 1 + rnd.nextInt(5), 1, 1, cells);
+            else
+                monster = new Skelet(20, 1 + rnd.nextInt(5), 3, 1, cells);
+
+            monster.startPosition(new Point(rnd.nextInt(CELLS_COUNT_X), rnd.nextInt(CELLS_COUNT_Y)));
+            new Thread(monster).start();
+            monsters.add(monster);
+        }
+    }
+
+    @Override
+    public void update() {
+        monsters.stream().filter((p) -> p.getHealth()==0).peek((p)->monsters.remove(p)).close();
+    }
+
+    @Override
+    public Character getUserCharacter() {
+        return userChar;
+    }
+
+    @Override
+    public List<BaseMonster> getMonsters() {
+        return monsters;
+    }
+
+    @Override
+    public Cell[][] getCells() {
+        return cells;
+    }
+
+    /*
     private static final Character generateRandomUserCharacter() {
         Character result;
         Random r = new Random();
@@ -41,101 +104,5 @@ public class GameServiceImpl implements GameService {
             ((Movable) result).moveTo(new Point(0, 0));
         }
         return result;
-    }
-
-    private static final Monster[] generateRandomMonsters() {
-        Random r = new Random();
-        Monster[] monsters = new Monster[r.nextInt(MAX_MONSTERS) + MAX_MONSTERS];
-        for(int i = 0; i < monsters.length; i++) {
-            Monster m;
-            if(r.nextInt(2) == 0) {
-                m = new Pig(r.nextInt(80) + 20, r.nextInt(10) + 5, r.nextInt(3) + 1);
-            } else {
-                m = new FlyPig(r.nextInt(50) + 20, r.nextInt(20) + 5, r.nextInt(8) + 1);
-            }
-            monsters[i] = m;
-        }
-        return monsters;
-    }
-
-    private Character userChar;
-    private Monster[] monsters;
-    private GameProcessor processor;
-
-    public GameServiceImpl() {
-        this.userChar = generateRandomUserCharacter();
-        this.monsters = generateRandomMonsters();
-        this.processor = this.new GameProcessor();
-        this.processor.printStat();
-    }
-
-    @Override
-    public api.model.Character getUserCharacter() {
-        return this.userChar;
-    }
-
-    @Override
-    public Monster[] getMonsters() {
-        return this.monsters;
-    }
-
-    @Override
-    public void calculateNextStep() {
-        this.processor.processNextStep();
-    }
-
-    private class GameProcessor {
-        private Movable[] movableMonsters = new Movable[monsters.length + 1];
-        private GameProcessor() {
-            Random r = new Random();
-            for(int i = 0; i < monsters.length; i++) {
-                if(monsters[i].canMove()) {
-                    int x = r.nextInt(MAX_MOVE_LENGTH);
-                    int y = r.nextInt(MAX_MOVE_LENGTH);
-                    Movable m = (Movable) monsters[i];
-                    m.moveTo(new Point(x, y));
-                    movableMonsters[i] = m;
-                }
-            }
-            movableMonsters[movableMonsters.length-1] = (Movable)userChar;
-        }
-
-        public void processNextStep() {
-            fight();
-            move();
-            printStat();
-        }
-
-        private void move() {
-            Random r = new Random();
-            for(int i = 0; i < movableMonsters.length; i++) {
-                Movable m = movableMonsters[i];
-                int sign = r.nextInt(2) == 0 ? -1 : 1;
-                m.moveTo(new Point(m.getPosition().x + r.nextInt(MAX_MOVE_LENGTH) * sign, m.getPosition().y + r.nextInt(MAX_MOVE_LENGTH) * sign));
-            }
-        }
-
-        private void fight() {
-            for(int i = 0; i < movableMonsters.length - 1; i++) {
-                Movable m1 = movableMonsters[i];
-                Movable m2 = movableMonsters[i + 1];
-                if(m1.getPosition().distance(m2.getPosition().getX(), m2.getPosition().getY()) <= ((Monster)m1).getAttackDistance()) {
-                    ((Monster) m1).attack(((Monster) m2));
-                }
-            }
-        }
-
-        private void printStat() {
-            for(int i = 0; i < movableMonsters.length; i++) {
-                Monster m = (Monster)movableMonsters[i];
-                System.out.println(m.getClass().getName()
-                        + " health="
-                        + m.getHealth()
-                        + " position="
-                        + movableMonsters[i].getPosition()
-                );
-            }
-        }
-
-    }
-}*/
+    }*/
+}

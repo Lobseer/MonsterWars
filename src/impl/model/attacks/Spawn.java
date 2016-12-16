@@ -11,13 +11,5 @@ import api.model.CharacterAction;
  */
 
 public class Spawn implements CharacterAction {
-    @Override
-    public void doAction() {
 
-    }
-
-    @Override
-    public Character getActionTarget() {
-        return null;
-    }
 }

@@ -6,8 +6,12 @@ import api.model.*;
  * Created by denis.selutin on 5/29/2015.
  */
 public class RangeAttack extends BaseAttack {
-    public RangeAttack(api.model.Character targetCharacter, int attackPower) {
-        super(targetCharacter, attackPower);
+    public RangeAttack() {
+        super(1, 1, 2);
+    }
+
+    public RangeAttack(int attackPower, int attackSpeed, int attackRange) {
+        super(attackPower, attackSpeed, attackRange);
     }
 
     @Override

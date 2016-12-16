@@ -17,7 +17,7 @@ public enum Sprite {
     /// %папка проекта%/res/ в расширении .png
     GRASS("tile_grass"), WATER("tile_water"), MOUNTAIN("tile_mountain"),
     SPAWN1("tile_spawn_monster_1"), SPAWN2("tile_spawn_monster_2"), SPAWN3("tile_spawn_monster_3"),
-    MONSTER("monster"), SKELET("skelet");
+    MONSTER("monster"), SKELET("skelet"), PIG("pig");
 
     private Texture texture;
 

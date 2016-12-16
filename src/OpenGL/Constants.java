@@ -13,12 +13,12 @@ public class Constants {
     public static final int CELL_MARGIN = 0;
 
     ///Размеры игрового поля в ячейках
-    public static final int CELLS_COUNT_X = 30;
-    public static final int CELLS_COUNT_Y = 18;
+    public static final int CELLS_COUNT_X = 40;
+    public static final int CELLS_COUNT_Y = 21;
 
     ///Константы для создания окна, названия достаточно говорящие.
-    public static final int SCREEN_WIDTH = CELLS_COUNT_X * CELL_SIZE + CELL_MARGIN * (CELLS_COUNT_X+1);
-    public static final int SCREEN_HEIGHT = CELLS_COUNT_Y * CELL_SIZE + CELL_MARGIN * (CELLS_COUNT_Y+1);
+    public static final int SCREEN_WIDTH = CELLS_COUNT_X * CELL_SIZE;
+    public static final int SCREEN_HEIGHT = CELLS_COUNT_Y * CELL_SIZE;
     public static final String SCREEN_NAME = "My Game";
 
     ///Шанс появления ягод на старте в процентах.

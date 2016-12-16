@@ -1,5 +1,7 @@
 package impl.model.monster;
 
+import OpenGL.Cell;
+import OpenGL.Sprite;
 import api.model.*;
 import impl.model.attacks.MaleAttack;
 
@@ -8,12 +10,11 @@ import impl.model.attacks.MaleAttack;
  */
 public class Pig extends BaseMonster implements Npc {
 
-    public Pig() {
-        super();
+    public Pig(Cell[][] area) {
+        super(area);
     }
 
-    @Override
-    protected CharacterAction getAttack(api.model.Character character) {
-        return new MaleAttack(character, attackPower);
+    public Pig(int health, float speed, int attackPower, int attackDistance, Cell[][] area) {
+        super(Sprite.PIG, health, speed, attackPower, attackDistance, area);
     }
 }

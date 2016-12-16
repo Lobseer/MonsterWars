@@ -1,7 +1,6 @@
 package OpenGL;
 import static OpenGL.Constants.*;
-import api.model.Character;
-import api.model.monster.Movable;
+
 import impl.model.BaseCharacter;
 
 /**
@@ -15,7 +14,7 @@ public class Cell implements GUIElement {
     private int x;
     private int y;
     private Sprite tile;
-    private BaseCharacter mob;
+    private BaseCharacter character;
 
     public Cell() {
         this(0, 0, Sprite.GRASS);
@@ -27,11 +26,17 @@ public class Cell implements GUIElement {
         this.tile = tile;
     }
 
-    public void putCharacter(BaseCharacter bc) {
-        if(bc!=null) {
-            mob = bc;
-        }
+    public BaseCharacter getCharacter() {
+        return character;
     }
+
+    public void putCharacter(BaseCharacter bc) {
+            character = bc;
+    }
+
+    public int getX() { return x;}
+
+    public int getY() { return y;}
 
     @Override
     public int getWidth() {
@@ -44,17 +49,18 @@ public class Cell implements GUIElement {
     }
 
     @Override
-    public int getY() {
-        return y;
+    public int getRenderX() {
+        return x * getWidth();
     }
 
     @Override
-    public int getX() {
-        return x;
+    public int getRenderY() {
+        return y * getHeight();
     }
 
     @Override
     public Sprite getSprite() {
+        //if(character!=null) return Sprite.SPAWN1;
         return tile;
     }
 

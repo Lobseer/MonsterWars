@@ -12,8 +12,7 @@ public class Main {
     private static boolean end_of_game=false;
 
     public static void main(String[] args) {
-        GUI game = new GUI();
-        game.init();
+        GUI.init();
 
         //GameService gameService = new GameServiceImpl();
 
@@ -24,8 +23,8 @@ public class Main {
 
         while(!end_of_game){
             input();
-            game.update();
-            game.draw();
+            GUI.update();
+            GUI.draw();
         }
     }
 

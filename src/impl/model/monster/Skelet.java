@@ -1,8 +1,11 @@
 package impl.model.monster;
 
+import OpenGL.Cell;
 import OpenGL.Sprite;
+import api.model.AttackType;
 import api.model.Character;
 import api.model.CharacterAction;
+import impl.model.attacks.MaleAttack;
 
 /**
  * Class description
@@ -13,16 +16,13 @@ import api.model.CharacterAction;
 
 public class Skelet extends BaseMonster {
 
-    public Skelet() {
-        super();
+    private AttackType attackType;
+
+    public Skelet(Cell[][] area) {
+        super(area);
     }
 
-    public Skelet(int health, float speed, int attackPower, int attackDistance) {
-        super(Sprite.SKELET, health, speed, attackPower, attackDistance);
-    }
-
-    @Override
-    protected CharacterAction getAttack(Character character) {
-        return null;
+    public Skelet(int health, float speed, int attackPower, int attackDistance, Cell[][] area) {
+        super(Sprite.SKELET, health, speed, attackPower, attackDistance, area);
     }
 }

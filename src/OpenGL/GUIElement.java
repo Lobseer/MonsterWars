@@ -13,9 +13,9 @@ public interface GUIElement {
 
     int getHeight();
 
-    int getY();
+    int getRenderX();
 
-    int getX();
+    int getRenderY();
 
     Sprite getSprite(); ///Создадим enum с таким именем, заполним позже
 
@@ -26,7 +26,7 @@ public interface GUIElement {
     /// Если у вас более ранняя версия, вы можете использовать абстрактный класс
     /// вместо интерфейса.
     default boolean isHit(int xclick, int yclick){
-        return ( (xclick > getX()) && (xclick < getX()+this.getWidth()) )
-                &&( (yclick > getY()) && (yclick < getY()+this.getHeight()) );
+        return ( (xclick > getRenderX()) && (xclick < getRenderX()+this.getWidth()) )
+                &&( (yclick > getRenderY()) && (yclick < getRenderY()+this.getHeight()) );
     }
 }
