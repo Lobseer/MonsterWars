@@ -6,29 +6,24 @@ import api.model.Character;
 /**
  * Created by Denis on 5/27/2015.
  */
-public class BaseAttack implements CharacterAction {
-
-    protected AttackType type;
+public abstract class BaseAttack implements CharacterAction {
     protected int attackPower;
-    protected int attackSpeed;
+    protected float attackSpeed;
     protected int attackRange;
 
-    public BaseAttack(int attackPower, int attackSpeed, int attackRange) {
-        //this.targetCharacter = targetCharacter;
+    public BaseAttack(int attackPower, float attackSpeed, int attackRange) {
         this.attackPower = attackPower;
         this.attackSpeed = attackSpeed;
         this.attackRange = attackRange;
     }
 
-    public AttackType getAttackType() {
-        return type;
-    }
+    public abstract AttackType getAttackType();
 
     public final int getAttackPower() {
         return this.attackPower;
     }
 
-    public final int getAttackSpeed() {
+    public final float getAttackSpeed() {
         return this.attackSpeed;
     }
 
@@ -36,8 +31,10 @@ public class BaseAttack implements CharacterAction {
         return this.attackRange;
     }
 
+    @Override
     public void doAction(Character character) {
-        if(character!=null)
-            character.modifyHealth(attackPower);
+        if(character!=null) {
+            character.modifyHealth(-attackPower * character.getArmor().getResist(getAttackType()));
+        }
     }
 }

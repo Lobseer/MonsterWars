@@ -10,7 +10,7 @@ public class RangeAttack extends BaseAttack {
         super(1, 1, 2);
     }
 
-    public RangeAttack(int attackPower, int attackSpeed, int attackRange) {
+    public RangeAttack(int attackPower, float attackSpeed, int attackRange) {
         super(attackPower, attackSpeed, attackRange);
     }
 

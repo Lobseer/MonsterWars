@@ -1,60 +1,53 @@
 package impl.model;
 
-import OpenGL.Cell;
 import OpenGL.GUIElement;
 import OpenGL.Sprite;
 import static OpenGL.Constants.*;
-import api.model.AttackType;
+
+import api.model.ArmorType;
 import api.model.Character;
-import api.model.CharacterAction;
 import api.model.Npc;
 import api.model.monster.*;
+import impl.model.Buildings.Spawner;
 import impl.model.attacks.BaseAttack;
 import impl.model.attacks.MaleAttack;
-
-import java.awt.*;
+import impl.service.GameServiceImpl;
+import impl.service.Vector2Int;
 
 /**
  * Created by Denis on 5/27/2015.
  */
 public abstract class BaseCharacter implements Character, Movable, GUIElement {
-    protected int health;
+    protected volatile float health;
     protected float moveSpeed;
+
     protected BaseAttack weapon;
+    private ArmorType armorType;
 
-
-    protected volatile Point position;
+    protected Vector2Int position;
     private Sprite icon;
-    protected Cell[][] area;
+    protected GameServiceImpl gameService;
 
-    public BaseCharacter(Cell[][] area) {
-        this(Sprite.MONSTER, 10, 1f, area);
-    }
-
-    public BaseCharacter(Sprite icon, int health, float moveSpeed, Cell[][] area) {
-        this.icon = icon;
-        this.health = health;
-        this.moveSpeed = moveSpeed;
-        this.area = area;
+    protected BaseCharacter(GameServiceImpl gameService) {
+        this.icon = Sprite.MONSTER;
+        this.health = 10;
+        this.moveSpeed = 1f;
+        this.gameService = gameService;
         this.weapon = new MaleAttack();
+        this.armorType = ArmorType.NO_ARMOR;
     }
 
-    public BaseCharacter(Sprite icon, int health, float moveSpeed, BaseAttack weapon, Point position,  Cell[][] area) {
+    protected BaseCharacter(GameServiceImpl gameService, Sprite icon, float health, float moveSpeed, BaseAttack weapon, ArmorType armorType ) {
         this.health = health;
         this.moveSpeed = moveSpeed;
         this.weapon = weapon;
-        this.position = position;
         this.icon = icon;
-        this.area = area;
+        this.gameService = gameService;
+        this.armorType = armorType;
     }
 
     @Override
-    public boolean canDoAction(CharacterAction action) {
-        return false;
-    }
-
-    @Override
-    public final void modifyHealth(int val) {
+    public final synchronized void modifyHealth(float val) {
         if(health==0) return;
         this.health += val;
         if(this.health < 0) {
@@ -64,16 +57,13 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
     }
 
     @Override
-    public final void doAction(CharacterAction action){
-        //implementing default algorithm for doing any action and making it immutable
-        //if(canDoAction(action) && health > 0) {
-        //    action.doAction();
-        //}
+    public final float getHealth() {
+        return this.health;
     }
 
     @Override
-    public final int getHealth() {
-        return this.health;
+    public ArmorType getArmor() {
+        return armorType;
     }
 
     @Override
@@ -81,31 +71,67 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
         return this.moveSpeed;
     }
 
+    public final int getAttackPower() {
+        if(weapon!=null) return this.weapon.getAttackPower();
+        return 1;
+    }
+
     public final float getAttackSpeed() {
-        return this.weapon.getAttackSpeed();
+        if(weapon!=null) return this.weapon.getAttackSpeed();
+        return 1;
+    }
+
+    public final int getAttackRange() {
+        if(weapon!=null) return this.weapon.getAttackRange();
+        return 1;
     }
 
     @Override
-    public final Point getPosition() {
+    public final Vector2Int getPosition() {
         return position;
     }
 
-    @Override
-    public final boolean isNpc() {
-        return Npc.class.isAssignableFrom(this.getClass());
+    public final void setStartPosition(Vector2Int position) {
+        if(position!= null) {
+            this.position = position;
+            gameService.getMap().putCharacter(this, position);
+        }
     }
 
     @Override
-    public final boolean canMove() {
-        return Movable.class.isAssignableFrom(this.getClass());
+    public final boolean canMoveTo(Vector2Int point) {
+        if(point.x < 0 || point.x >= CELLS_COUNT_X || point.y < 0 || point.y >= CELLS_COUNT_Y) return false;
+        Sprite tile = gameService.getMap().getTile(point);
+        switch (tile) {
+            case HIGHT_MOUNTAIN: return false;
+            case MOUNTAIN:
+                if(!canFly()) return false;
+            case WATER:
+                if(!(canFly()||canSwim())) return false;
+        }
+        return !gameService.getMap().isOccupied(point);
     }
 
-    protected boolean canFly(Object o){
-        return Flying.class.isAssignableFrom(o.getClass());
+    @Override
+    public void moveTo(Vector2Int point) {
+        if(canMoveTo(point)) {
+            gameService.getMap().putCharacter(null, position);
+            this.position = point;
+            gameService.getMap().putCharacter(this, point);
+        }
     }
 
-    protected boolean canSwim(Object o) {
-        return Swimming.class.isAssignableFrom(o.getClass());
+    protected final boolean isEnemy(Character character) {
+        if(character instanceof Spawner) {
+            Class home = ((Spawner)character).getProtoClass();
+            if(this.getClass().isAssignableFrom(home)) return false;
+        }
+        return !this.getClass().isAssignableFrom(character.getClass());
+    }
+
+    @Override
+    public boolean isDead() {
+        return health<=0;
     }
 
     @Override
@@ -131,5 +157,10 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
     @Override
     public final Sprite getSprite() {
         return icon;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%1s: position=%2s",this.getClass().getSimpleName(), position);
     }
 }

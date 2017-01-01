@@ -11,7 +11,7 @@ public class MaleAttack extends BaseAttack {
         super(1, 1, 1);
     }
 
-    public MaleAttack(int attackPower, int attackSpeed) {
+    public MaleAttack(int attackPower, float attackSpeed) {
         super(attackPower, attackSpeed, 1);
     }
 

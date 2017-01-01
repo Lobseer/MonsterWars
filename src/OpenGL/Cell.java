@@ -1,7 +1,10 @@
 package OpenGL;
 import static OpenGL.Constants.*;
 
+import api.model.Character;
 import impl.model.BaseCharacter;
+
+import java.util.List;
 
 /**
  * Class description
@@ -14,7 +17,8 @@ public class Cell implements GUIElement {
     private int x;
     private int y;
     private Sprite tile;
-    private BaseCharacter character;
+    private Character character;
+    public String value;
 
     public Cell() {
         this(0, 0, Sprite.GRASS);
@@ -26,17 +30,17 @@ public class Cell implements GUIElement {
         this.tile = tile;
     }
 
-    public BaseCharacter getCharacter() {
+    public Character getCharacter() {
         return character;
     }
 
-    public void putCharacter(BaseCharacter bc) {
+    public void putCharacter(Character bc) {
             character = bc;
     }
 
-    public int getX() { return x;}
-
-    public int getY() { return y;}
+    //public void updateValue() {
+    //    GUI.drawNumber(value+"", x, y, CELL_SIZE, CELL_SIZE, 0, 0, 0);
+    //}
 
     @Override
     public int getWidth() {
@@ -63,5 +67,8 @@ public class Cell implements GUIElement {
         //if(character!=null) return Sprite.SPAWN1;
         return tile;
     }
-
+    @Override
+    public String getParams() {
+        return value;
+    }
 }

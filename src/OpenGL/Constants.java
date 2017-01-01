@@ -9,12 +9,12 @@ package OpenGL;
 
 public class Constants {
     ///Размер игровой ячейки
-    public static final int CELL_SIZE = 32;
+    public static final int CELL_SIZE = 50;
     public static final int CELL_MARGIN = 0;
 
     ///Размеры игрового поля в ячейках
-    public static final int CELLS_COUNT_X = 40;
-    public static final int CELLS_COUNT_Y = 21;
+    public static final int CELLS_COUNT_X = 27;
+    public static final int CELLS_COUNT_Y = 14;
 
     ///Константы для создания окна, названия достаточно говорящие.
     public static final int SCREEN_WIDTH = CELLS_COUNT_X * CELL_SIZE;
