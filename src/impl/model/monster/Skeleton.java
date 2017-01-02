@@ -1,14 +1,10 @@
 package impl.model.monster;
 
-import OpenGL.Sprite;
+import api.service.GameService;
+import impl.service.Sprite;
 import api.model.ArmorType;
-import api.model.AttackType;
-import api.model.Character;
-import api.model.monster.Swimming;
-import impl.model.Buildings.Spawner;
-import impl.model.attacks.RangeAttack;
-import impl.service.GameMap;
-import impl.service.GameServiceImpl;
+import api.model.scope.Swimming;
+import impl.model.weapons.RangeAttack;
 
 /**
  * Class description
@@ -19,13 +15,11 @@ import impl.service.GameServiceImpl;
 
 public class Skeleton extends BaseMonster implements Swimming {
 
-    private AttackType attackType;
-
-    public Skeleton(GameServiceImpl area) {
+    public Skeleton(GameService area) {
         super(area);
     }
 
-    public Skeleton(GameServiceImpl area, float health, float speed, int attackPower, float attackSpeed, int attackRange, int aggresiveDistance) {
+    public Skeleton(GameService area, float health, float speed, int attackPower, float attackSpeed, int attackRange, int aggresiveDistance) {
         super(area, Sprite.SKELETON, health, speed, new RangeAttack(attackPower, attackSpeed , attackRange), ArmorType.LIGHT, aggresiveDistance);
     }
 

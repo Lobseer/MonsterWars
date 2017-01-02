@@ -1,4 +1,4 @@
-package api.model.monster;
+package api.model.scope;
 
 import impl.service.Vector2Int;
 

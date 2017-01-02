@@ -1,4 +1,4 @@
-package OpenGL;
+package impl.service;
 
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;

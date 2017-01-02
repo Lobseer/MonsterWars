@@ -1,15 +1,5 @@
 package impl.model.user;
 
-import OpenGL.Sprite;
-import api.model.*;
-import api.model.monster.Flying;
-import api.model.monster.Movable;
-import impl.model.BaseCharacter;
-import impl.model.attacks.MagicAttack;
-import impl.model.monster.BaseMonster;
-
-import java.awt.*;
-
 /**
  * Created by denis.selutin on 5/29/2015.
  */

@@ -1,7 +1,7 @@
-package impl.model.attacks;
+package impl.model.weapons;
 
 import api.model.Character;
-import api.model.CharacterAction;
+import api.model.actions.CharacterAction;
 
 /**
  * Class description

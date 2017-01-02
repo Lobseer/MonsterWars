@@ -48,15 +48,22 @@ public class Vector2Int implements Cloneable{
         return (float)Math.sqrt(x*x + y*y);
     }
 
-    public Vector2Int normalized() {
-        Vector2Int result = new Vector2Int(x, y);
-        result.normalize();
-        return result;
-    }
-
-    public void normalize(){
-        x = (int)(x/getLength());
-        y = (int)(y/getLength());
+    public Vector2Int normalize(){
+        float nx = x/getLength();
+        float ny = y/getLength();
+        if(nx==0 && ny==0) {
+            return this;
+        } else if(Math.abs(nx) >= Math.abs(ny)*1.5f) {
+            x = nx>0?1:-1;
+            y = 0;
+        } else if(Math.abs(ny) >= Math.abs(nx)*1.5f) {
+            y = ny>0?1:-1;
+            x = 0;
+        } else {
+            x = nx>0?1:-1;
+            y = ny>0?1:-1;
+        }
+        return this;
     }
 
     public void revert() {
@@ -84,16 +91,15 @@ public class Vector2Int implements Cloneable{
 
     public static Vector2Int getRandomDirection() {
         Random rnd = new Random();
-        switch (rnd.nextInt(9)) {
+        switch (rnd.nextInt(8)) {
             case 0: return RIGHT;
             case 1: return LEFT;
             case 2: return UP;
             case 3: return DOWN;
-            case 4: return DOWN;
-            case 5: return UP.add(RIGHT);
-            case 6: return UP.add(LEFT);
-            case 7: return DOWN.add(RIGHT);
-            case 8: return DOWN.add(LEFT);
+            //case 4: return UP.add(RIGHT);
+            //case 5: return UP.add(LEFT);
+            //case 6: return DOWN.add(RIGHT);
+            //case 7: return DOWN.add(LEFT);
             default: return ZERO;
         }
     }
@@ -111,6 +117,13 @@ public class Vector2Int implements Cloneable{
         y = to.y - from.y;
         int range = (int)Math.round(Math.sqrt(x*x + y*y));
         return range;
+    }
+
+    public static int getArrayDistance(Vector2Int from, Vector2Int to) {
+        int x, y;
+        x = Math.abs(to.x - from.x);
+        y = Math.abs(to.y - from.y);
+        return x > y?x:y;
     }
 
     @Override

@@ -1,11 +1,11 @@
-package impl.model.attacks;
+package impl.model.weapons;
 
 import api.model.*;
 
 /**
  * Created by denis.selutin on 5/29/2015.
  */
-public class MagicAttack extends BaseAttack {
+public class MagicAttack extends BaseWeapon {
     public MagicAttack() {
         super(2, 2, 2);
     }

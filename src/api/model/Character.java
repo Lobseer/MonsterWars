@@ -1,16 +1,21 @@
 package api.model;
 
-import api.model.monster.Flying;
-import api.model.monster.Movable;
-import api.model.monster.Swimming;
+import api.model.actions.CharacterAction;
+import api.model.scope.Flying;
+import api.model.scope.Movable;
+import api.model.scope.Npc;
+import api.model.scope.Swimming;
 import impl.service.Vector2Int;
 
 /**
- * Created by Denis on 5/27/2015.
+ * Class description
+ *
+ * @author lobseer
+ * @version 31.12.2016
  */
 public interface Character {
     boolean canDoAction(CharacterAction action);
-    void doAction(CharacterAction action);
+    void takeAction(CharacterAction action);
     float getHealth();
     void modifyHealth(float val);
     ArmorType getArmor();

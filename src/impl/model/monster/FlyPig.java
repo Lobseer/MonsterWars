@@ -1,9 +1,5 @@
 package impl.model.monster;
 
-import api.model.*;
-import api.model.monster.Flying;
-import impl.model.attacks.RangeAttack;
-
 /**
  * Created by denis.selutin on 5/29/2015.
  */

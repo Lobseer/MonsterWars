@@ -1,17 +1,20 @@
-package impl.model.attacks;
+package impl.model.weapons;
 
 import api.model.*;
-import api.model.Character;
+import api.model.actions.CharacterAction;
 
 /**
- * Created by Denis on 5/27/2015.
+ * Class description
+ *
+ * @author lobseer
+ * @version 31.12.2016
  */
-public abstract class BaseAttack implements CharacterAction {
+public abstract class BaseWeapon {
     protected int attackPower;
     protected float attackSpeed;
     protected int attackRange;
 
-    public BaseAttack(int attackPower, float attackSpeed, int attackRange) {
+     protected BaseWeapon(int attackPower, float attackSpeed, int attackRange) {
         this.attackPower = attackPower;
         this.attackSpeed = attackSpeed;
         this.attackRange = attackRange;
@@ -31,10 +34,9 @@ public abstract class BaseAttack implements CharacterAction {
         return this.attackRange;
     }
 
-    @Override
-    public void doAction(Character character) {
-        if(character!=null) {
-            character.modifyHealth(-attackPower * character.getArmor().getResist(getAttackType()));
-        }
+    public CharacterAction getAction() {
+        return ((target) -> {
+            if(target!=null) target.modifyHealth(-attackPower * target.getArmor().getResist(getAttackType()));
+        });
     }
 }

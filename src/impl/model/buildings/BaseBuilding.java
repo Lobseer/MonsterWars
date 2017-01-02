@@ -1,17 +1,13 @@
-package impl.model.Buildings;
+package impl.model.buildings;
 
-import OpenGL.GUIElement;
-import OpenGL.Sprite;
+import api.service.GUIElement;
+import api.service.GameService;
+import impl.service.Sprite;
 import api.model.ArmorType;
 import api.model.Character;
-import api.model.Npc;
-import api.model.monster.Flying;
-import api.model.monster.Movable;
-import api.model.monster.Swimming;
-import impl.service.GameServiceImpl;
 import impl.service.Vector2Int;
 
-import static OpenGL.Constants.CELL_SIZE;
+import static impl.service.GameMonsterWarsPreview.*;
 
 /**
  * Class description
@@ -24,10 +20,10 @@ public abstract class BaseBuilding implements Character, GUIElement, AutoCloseab
     private float health;
 
     protected Vector2Int position;
-    protected GameServiceImpl gameService;
+    protected GameService gameService;
     private Sprite icon;
 
-    protected BaseBuilding(GameServiceImpl gameService, Sprite icon, Vector2Int position, float health) {
+    protected BaseBuilding(GameService gameService, Sprite icon, Vector2Int position, float health) {
         this.gameService = gameService;
         this.icon = icon;
         this. health = health;

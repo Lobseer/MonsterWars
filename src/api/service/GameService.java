@@ -1,11 +1,9 @@
 package api.service;
 
-import OpenGL.Cell;
 import api.model.Character;
-import impl.model.Buildings.BaseBuilding;
+import impl.model.buildings.BaseBuilding;
 import impl.model.monster.BaseMonster;
 import impl.service.GameMap;
-import impl.service.GameServiceImpl;
 
 import java.util.List;
 
@@ -14,12 +12,9 @@ import java.util.List;
  */
 public interface GameService {
     Character getUserCharacter();
-
     List<BaseMonster> getMonsters();
-
     List<BaseBuilding> getBuildings();
-
     GameMap getMap();
-
+    void startNewGame();
     void update();
 }

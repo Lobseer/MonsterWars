@@ -1,6 +1,6 @@
-package OpenGL;
+package api.service;
 
-import java.util.List;
+import impl.service.Sprite;
 
 /**
  * Class description

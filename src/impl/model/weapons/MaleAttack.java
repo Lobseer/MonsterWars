@@ -1,12 +1,11 @@
-package impl.model.attacks;
+package impl.model.weapons;
 
 import api.model.*;
-import api.model.Character;
 
 /**
  * Created by denis.selutin on 5/29/2015.
  */
-public class MaleAttack extends BaseAttack {
+public class MaleAttack extends BaseWeapon {
     public MaleAttack() {
         super(1, 1, 1);
     }

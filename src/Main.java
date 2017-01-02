@@ -1,24 +1,23 @@
-import OpenGL.GUI;
-import OpenGL.Sprite;
 import api.service.GameService;
-// impl.service.GameServiceImpl;
-import impl.service.GameServiceImpl;
+import impl.service.GUI;
+import impl.service.GameMonsterWarsPreview;
+import impl.service.Sprite;
+// impl.service.GameMonsterWarsPreview;
 import impl.service.Vector2Int;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
-import static OpenGL.Constants.CELLS_COUNT_X;
-import static OpenGL.Constants.CELLS_COUNT_Y;
+import static impl.service.GameMonsterWarsPreview.*;
 
 public class Main {
 
     private static boolean end_of_game=false;
-    private static GameServiceImpl gameService;
+    private static GameService gameService;
 
     public static void main(String[] args) {
         GUI.init();
-        gameService = new GameServiceImpl();
+        gameService = new GameMonsterWarsPreview();
         GUI.start(gameService);
 
         try {
@@ -41,7 +40,7 @@ public class Main {
             ///перемещение...
             if(Mouse.getEventButton()>=0 && Mouse.getEventButtonState()){
                 int result;
-                ///Отсылаем это на обработку в GUI
+                //Отсылаем это на обработку в GUI
                 //result = GUI.receiveClick(Mouse.getEventX(), Mouse.getEventY(), Mouse.getEventButton());
             }
         }
@@ -49,19 +48,26 @@ public class Main {
         ///То же самое с клавиатурой
         while(Keyboard.next()){
             if(Keyboard.getEventKeyState()){
-                if(Keyboard.getEventKey()==Keyboard.KEY_ESCAPE){
-                    end_of_game = true;
+                switch (Keyboard.getEventKey()) {
+                    case Keyboard.KEY_ESCAPE:
+                        end_of_game = true;
+                        break;
+                    case Keyboard.KEY_Q:
+
+                        break;
+                    case Keyboard.KEY_W:
+                        Vector2Int pos = new Vector2Int(0,0);
+                        Vector2Int tar = new Vector2Int(CELLS_COUNT_X-1, CELLS_COUNT_Y-1);
+
+                        gameService.getMap().setTile(pos, Sprite.PIG);
+                        gameService.getMap().setTile(tar, Sprite.HIGHT_MOUNTAIN);
+
+                        //gameService.wavePathFinding(pos, tar);
+                        break;
+                    case Keyboard.KEY_E:
+
+                        break;
                 }
-                if(Keyboard.getEventKey()==Keyboard.KEY_W){
-                    Vector2Int pos = new Vector2Int(0,0);
-                    Vector2Int tar = new Vector2Int(CELLS_COUNT_X-1, CELLS_COUNT_Y-1);
-
-                    gameService.getMap().setTile(pos, Sprite.PIG);
-                    gameService.getMap().setTile(tar, Sprite.HIGHT_MOUNTAIN);
-
-                    gameService.wavePathFinding(pos, tar);
-                }
-
             }
         }
 
@@ -69,24 +75,19 @@ public class Main {
         if(end_of_game || Display.isCloseRequested()) {
             end_of_game = true;
             System.out.println("FULL END OFF GAME---------------------------------------------------------------------");
-            for (Thread thread :
-                    Thread.getAllStackTraces().keySet()) {
-                System.out.println(thread.getName());
-            }
+            //for (Thread thread :
+            //        Thread.getAllStackTraces().keySet()) {
+            //    System.out.println(thread.getName());
+            //}
 
             for(AutoCloseable mob : gameService.getBuildings()) {
                 mob.close();
             }
-            //for(BaseMonster mob : gameService.getMonsters()) {
-            //    mob.die();
-            //}
-
-            System.out.println("----------------------------------");
-            for (Thread thread :
-                    Thread.getAllStackTraces().keySet()) {
-                System.out.println(thread.getName());
+            for(AutoCloseable mob : gameService.getMonsters()) {
+                mob.close();
             }
 
+            System.out.println("----------------------------------");
         }
     }
 }

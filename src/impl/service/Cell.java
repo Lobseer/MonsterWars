@@ -1,10 +1,9 @@
-package OpenGL;
-import static OpenGL.Constants.*;
+package impl.service;
 
+import static impl.service.GameMonsterWarsPreview.CELL_SIZE;
+
+import api.service.GUIElement;
 import api.model.Character;
-import impl.model.BaseCharacter;
-
-import java.util.List;
 
 /**
  * Class description

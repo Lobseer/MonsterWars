@@ -1,13 +1,12 @@
-package impl.model.Buildings;
+package impl.model.buildings;
 
-import OpenGL.Sprite;
-import api.model.CharacterAction;
-import impl.model.attacks.Spawn;
+import api.service.GameService;
+import impl.service.Sprite;
+import api.model.actions.CharacterAction;
+import impl.model.weapons.Spawn;
 import impl.model.monster.BaseMonster;
-import impl.service.GameServiceImpl;
 import impl.service.Vector2Int;
 
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,7 +29,7 @@ public class Spawner extends BaseBuilding implements Runnable{
     ExecutorService mobPool;
     Thread spawnThread;
 
-    public Spawner(GameServiceImpl map, Sprite icon, Vector2Int position, float health, BaseMonster monsterPrototype, int spawnSpeed, int mobMaxCount) {
+    public Spawner(GameService map, Sprite icon, Vector2Int position, float health, BaseMonster monsterPrototype, int spawnSpeed, int mobMaxCount) {
         super(map, icon, position, health);
         this.monsterPrototype = monsterPrototype;
         this.spawnSpeed = spawnSpeed;
@@ -54,7 +53,10 @@ public class Spawner extends BaseBuilding implements Runnable{
 
         mob.setStartPosition(startPos);
         gameService.getMonsters().add(mob);
-        mobPool.submit(mob);
+
+        Thread mobThread = new Thread(mob);
+        mob.mobThread = mobThread;
+        mobPool.submit(mobThread);
         mobCount++;
     }
 
@@ -64,7 +66,7 @@ public class Spawner extends BaseBuilding implements Runnable{
     }
 
     @Override
-    public void doAction(CharacterAction action) {
+    public void takeAction(CharacterAction action) {
         if(canDoAction(action)){
 
         }
@@ -75,6 +77,7 @@ public class Spawner extends BaseBuilding implements Runnable{
     public void die() {
         gameService.getMap().putCharacter(null, position);
         gameService.getBuildings().remove(this);
+        close();
     }
 
     @Override
@@ -97,8 +100,7 @@ public class Spawner extends BaseBuilding implements Runnable{
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         spawnThread.interrupt();
-        mobPool.shutdownNow();
     }
 }

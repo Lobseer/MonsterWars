@@ -1,34 +1,38 @@
 package impl.model;
 
-import OpenGL.GUIElement;
-import OpenGL.Sprite;
-import static OpenGL.Constants.*;
+import api.service.GUIElement;
+import api.service.GameService;
+import impl.service.Sprite;
 
 import api.model.ArmorType;
 import api.model.Character;
-import api.model.Npc;
-import api.model.monster.*;
-import impl.model.Buildings.Spawner;
-import impl.model.attacks.BaseAttack;
-import impl.model.attacks.MaleAttack;
-import impl.service.GameServiceImpl;
+import api.model.actions.CharacterAction;
+import api.model.scope.Movable;
+import impl.model.buildings.Spawner;
+import impl.model.weapons.BaseWeapon;
+import impl.model.weapons.MaleAttack;
 import impl.service.Vector2Int;
 
+import static impl.service.GameMonsterWarsPreview.*;
+
 /**
- * Created by Denis on 5/27/2015.
+ * Class description
+ *
+ * @author lobseer
+ * @version 31.12.2016
  */
 public abstract class BaseCharacter implements Character, Movable, GUIElement {
     protected volatile float health;
     protected float moveSpeed;
 
-    protected BaseAttack weapon;
+    protected BaseWeapon weapon;
     private ArmorType armorType;
 
     protected Vector2Int position;
     private Sprite icon;
-    protected GameServiceImpl gameService;
+    protected GameService gameService;
 
-    protected BaseCharacter(GameServiceImpl gameService) {
+    protected BaseCharacter(GameService gameService) {
         this.icon = Sprite.MONSTER;
         this.health = 10;
         this.moveSpeed = 1f;
@@ -37,7 +41,7 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
         this.armorType = ArmorType.NO_ARMOR;
     }
 
-    protected BaseCharacter(GameServiceImpl gameService, Sprite icon, float health, float moveSpeed, BaseAttack weapon, ArmorType armorType ) {
+    protected BaseCharacter(GameService gameService, Sprite icon, float health, float moveSpeed, BaseWeapon weapon, ArmorType armorType ) {
         this.health = health;
         this.moveSpeed = moveSpeed;
         this.weapon = weapon;
@@ -47,14 +51,28 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
     }
 
     @Override
-    public final synchronized void modifyHealth(float val) {
+    public final void modifyHealth(float val) {
         if(health==0) return;
         this.health += val;
-        if(this.health < 0) {
-            this.health = 0;
-            //System.out.println(getClass().getName() + " is DEAD");
-        }
+        if(isDead())
+            die();
     }
+
+    @Override
+    public void takeAction(CharacterAction action) {
+        if(action!=null)
+            action.doAction(this);
+    }
+
+    protected final boolean isEnemy(Character character) {
+        if(character instanceof Spawner) {
+            Class home = ((Spawner)character).getProtoClass();
+            if(this.getClass().isAssignableFrom(home)) return false;
+        }
+        return !this.getClass().isAssignableFrom(character.getClass());
+    }
+
+    public abstract void die();
 
     @Override
     public final float getHealth() {
@@ -119,14 +137,6 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
             this.position = point;
             gameService.getMap().putCharacter(this, point);
         }
-    }
-
-    protected final boolean isEnemy(Character character) {
-        if(character instanceof Spawner) {
-            Class home = ((Spawner)character).getProtoClass();
-            if(this.getClass().isAssignableFrom(home)) return false;
-        }
-        return !this.getClass().isAssignableFrom(character.getClass());
     }
 
     @Override

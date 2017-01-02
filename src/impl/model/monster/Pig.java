@@ -1,22 +1,21 @@
 package impl.model.monster;
 
-import OpenGL.Sprite;
+import api.service.GameService;
+import impl.service.Sprite;
 import api.model.*;
-import api.model.Character;
-import impl.model.Buildings.Spawner;
-import impl.model.attacks.MaleAttack;
-import impl.service.GameServiceImpl;
+import api.model.scope.Npc;
+import impl.model.weapons.MaleAttack;
 
 /**
  * Created by Denis on 5/27/2015.
  */
 public class Pig extends BaseMonster implements Npc {
 
-    public Pig(GameServiceImpl area) {
+    public Pig(GameService area) {
         super(area);
     }
 
-    public Pig(GameServiceImpl area, float health, float speed, int attackPower, float attackSpeed, int aggresiveDistance) {
+    public Pig(GameService area, float health, float speed, int attackPower, float attackSpeed, int aggresiveDistance) {
         super(area, Sprite.PIG, health, speed, new MaleAttack(attackPower, attackSpeed), ArmorType.NO_ARMOR, aggresiveDistance);
     }
 
