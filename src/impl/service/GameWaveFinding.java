@@ -22,7 +22,7 @@ public class GameWaveFinding implements GameService {
     private List<BaseBuilding> buildings = new ArrayList<>();
 
     public GameWaveFinding() {
-        map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y, 15);
+        map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y, 15, 0);
     }
 
     //don't touch it
@@ -82,6 +82,11 @@ public class GameWaveFinding implements GameService {
     @Override
     public GameMap getMap() {
         return map;
+    }
+
+    @Override
+    public MobsStatus getCharacterStatus(Class mobType) {
+        return null;
     }
 
     @Override

@@ -52,7 +52,6 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
 
     @Override
     public final void modifyHealth(float val) {
-        if(health==0) return;
         this.health += val;
         if(isDead())
             die();
@@ -142,6 +141,11 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
     @Override
     public boolean isDead() {
         return health<=0;
+    }
+
+    @Override
+    public void receiveClick() {
+        System.out.println(this.getClass().getSimpleName()+": "+position);
     }
 
     @Override

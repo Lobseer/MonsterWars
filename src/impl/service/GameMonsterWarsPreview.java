@@ -7,8 +7,10 @@ import impl.model.buildings.Spawner;
 import impl.model.monster.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Class description
@@ -16,34 +18,38 @@ import java.util.Random;
  * @author lobseer
  * @version 02.01.2017
  */
+
 public class GameMonsterWarsPreview implements GameService {
 
     private GameMap map;
     private Character userChar;
-    private List<BaseMonster> monsters = new ArrayList<>();
-    private List<BaseBuilding> buildings = new ArrayList<>();
+    private List<BaseMonster> monsters = new CopyOnWriteArrayList<>();
+    private List<BaseBuilding> buildings = new CopyOnWriteArrayList<>();
+
+    public List<MobsStatus> gameStats = new ArrayList<>();
 
     public GameMonsterWarsPreview() {
-        map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y, 15);
+        map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y, 8, 12);
 
         //startNewGame();
         //generateManikens(10);
-        generateRandomMonsters(skeleton, 3);
-        generateRandomMonsters(pig, 10);
+        //generateRandomMonsters(skeleton, 3);
+        //generateRandomMonsters(pig, 10);
         startNewGame();
     }
 
     @Override
     public void startNewGame() {
-        new Spawner(this, Sprite.SPAWN3, new Vector2Int(1, 1), 100, pig, 7, 30);
-        new Spawner(this, Sprite.SPAWN1, new Vector2Int(CELLS_COUNT_X - 2, CELLS_COUNT_Y - 2), 100, skeleton, 15, 10);
+        new Spawner(this, Sprite.SPAWN3, new Vector2Int(1, 1), 100, pig, 7, 5);
+        new Spawner(this, Sprite.SPAWN1, new Vector2Int(CELLS_COUNT_X - 2, CELLS_COUNT_Y - 2), 100, skeleton, 15, 2);
     }
 
-
+    /*
     public GameMonsterWarsPreview(Character player) {
-        map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y, 15);
+        map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y, 8, 12);
         userChar = player;
     }
+    */
 
     private void generateRandomMonsters(BaseMonster prototype, int count) {
         BaseMonster mob;
@@ -79,6 +85,11 @@ public class GameMonsterWarsPreview implements GameService {
     @Override
     public void update() {
 
+    }
+
+    public MobsStatus getCharacterStatus(Class mobType)
+    {
+        return gameStats.stream().filter((p)->p.type == mobType).findAny().get();
     }
 
     @Override
@@ -122,7 +133,7 @@ public class GameMonsterWarsPreview implements GameService {
     public static final int CELL_SIZE = 50;
 
     ///Размеры игрового поля в ячейках
-    public static final int CELLS_COUNT_X = 26;
+    public static final int CELLS_COUNT_X = 13;
     public static final int CELLS_COUNT_Y = 13;
 
     ///Константы для создания окна, названия достаточно говорящие.

@@ -19,20 +19,29 @@ import static impl.service.GameMonsterWarsPreview.*;
 public class GameMap {
     private Cell[][] map;
 
-    public GameMap(int mapWidth, int mapHeight, int mountainCount) {
+    public GameMap(int mapWidth, int mapHeight, int mountainCount, int waterCount) {
         map = new Cell[mapWidth][mapHeight];
-        worldGen(mountainCount);
+        worldGen(waterCount, mountainCount);
     }
 
-    public void worldGen(int barrierCount) {
-
+    public void worldGen(int waterCount, int mountainCount) {
         for (int i = 0; i < map.length; i++)
             for (int j = 0; j < map[i].length; j++) {
                 map[i][j] = new Cell(i, j, Sprite.GRASS);
             }
+        waterGen(waterCount);
+        mountainGen(mountainCount);
+    }
 
-        for(int i = 0; i<barrierCount; i++) {
+    private void mountainGen(int count) {
+        for(int i = 0; i<count; i++) {
             setTile(getRandomPosition(),Sprite.MOUNTAIN);
+        }
+    }
+
+    private void waterGen(int count) {
+        for(int i = 0; i<count; i++) {
+            setTile(getRandomPosition(),Sprite.WATER);
         }
     }
 
@@ -43,6 +52,12 @@ public class GameMap {
             result= new Vector2Int(1+rnd.nextInt(map.length - 3), rnd.nextInt(1+map[1].length - 3));
         } while (getTile(result)!=Sprite.GRASS || isOccupied(result));
         return result;
+    }
+
+    public void receiveClick(int x, int y, int button) {
+        int cell_x = x/CELL_SIZE;
+        int cell_y = y/CELL_SIZE;
+        map[cell_x][cell_y].receiveClick();
     }
 
     public GUIElement[][] getDrawMap() {

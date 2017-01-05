@@ -42,6 +42,11 @@ public class Cell implements GUIElement {
     //}
 
     @Override
+    public void receiveClick() {
+        if(character!=null) ((GUIElement)character).receiveClick();
+    }
+
+    @Override
     public int getWidth() {
         return CELL_SIZE;
     }

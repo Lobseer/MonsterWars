@@ -9,6 +9,7 @@ import api.model.actions.CharacterAction;
 import api.service.GameService;
 import impl.model.BaseCharacter;
 import impl.model.weapons.BaseWeapon;
+import impl.service.GameMonsterWarsPreview;
 import impl.service.Vector2Int;
 import impl.service.Sprite;
 
@@ -65,6 +66,7 @@ public abstract class BaseMonster extends BaseCharacter implements Monster, Runn
     public final void die() {
         gameService.getMap().putCharacter(null, position);
         gameService.getMonsters().remove(this);
+        gameService.getCharacterStatus(this.getClass()).count--;
         if (mobThread != null) close();
     }
 
@@ -116,6 +118,8 @@ public abstract class BaseMonster extends BaseCharacter implements Monster, Runn
 
         } catch (InterruptedException ex) {
             System.out.printf("Ex \"%1s\"; class: %2s; thread: %3s\n", ex.getMessage(), this.getClass().getSimpleName(), Thread.currentThread().getName());
+        } catch (Exception ex) {
+            System.out.println("In Monster "+ex.getMessage());
         }
     }
 

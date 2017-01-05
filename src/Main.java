@@ -28,7 +28,7 @@ public class Main {
                 GUI.update();
             }
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("In main " + ex.getMessage());
         }
     }
 
@@ -39,9 +39,7 @@ public class Main {
             ///Если это было нажатие кнопки мыши, а не
             ///перемещение...
             if(Mouse.getEventButton()>=0 && Mouse.getEventButtonState()){
-                int result;
-                //Отсылаем это на обработку в GUI
-                //result = GUI.receiveClick(Mouse.getEventX(), Mouse.getEventY(), Mouse.getEventButton());
+                gameService.getMap().receiveClick(Mouse.getEventX(), Mouse.getEventY(), Mouse.getEventButton());
             }
         }
 

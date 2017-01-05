@@ -42,20 +42,24 @@ public abstract class BaseBuilding implements Character, GUIElement, AutoCloseab
 
     @Override
     public final void modifyHealth(float val) {
-        if(health==0) return;
         this.health += val;
-
-        if(this.health < 0) {
-            this.health = 0;
-        }
+        if(isDead())
+            die();
     }
 
     @Override
     public boolean isDead() {return health<=0;}
 
+    public abstract void die();
+
     @Override
     public Vector2Int getPosition() {
         return position;
+    }
+
+    @Override
+    public void receiveClick() {
+        System.out.println(this.getClass().getSimpleName()+": "+position);
     }
 
     @Override

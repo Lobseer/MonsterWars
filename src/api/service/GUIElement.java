@@ -25,14 +25,14 @@ public interface GUIElement {
         return null;
     }
 
-    //int receiveClick(int x, int y, int button); /// Возвращаем результат клика
-    ///Параметр button определяет кнопку мыши, которой был сделан щелчок.
+    void receiveClick(); /// Возвращаем результат клика
+    //Параметр button определяет кнопку мыши, которой был сделан щелчок.
 
-    /// Здесь используется фишка Java 8 --- default методы в интерфейсах.
-    /// Если у вас более ранняя версия, вы можете использовать абстрактный класс
-    /// вместо интерфейса.
-    //default boolean isHit(int xclick, int yclick){
-    //    return ( (xclick > getRenderX()) && (xclick < getRenderX()+this.getWidth()) )
-    //            &&( (yclick > getRenderY()) && (yclick < getRenderY()+this.getHeight()) );
-    //}
+    // Здесь используется фишка Java 8 --- default методы в интерфейсах.
+    // Если у вас более ранняя версия, вы можете использовать абстрактный класс
+    // вместо интерфейса.
+    default boolean isHit(int xclick, int yclick){
+        return ( (xclick > getRenderX()) && (xclick < getRenderX()+this.getWidth()) )
+                &&( (yclick > getRenderY()) && (yclick < getRenderY()+this.getHeight()) );
+    }
 }

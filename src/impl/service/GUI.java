@@ -10,7 +10,6 @@ import org.lwjgl.opengl.DisplayMode;
 import static impl.service.GameMonsterWarsPreview.*;
 import static org.lwjgl.opengl.GL11.*;
 
-
 /**
  * Class description
  *
@@ -87,18 +86,22 @@ public class GUI {
         ///Очищает экран от старого изображения
         glClear(GL_COLOR_BUFFER_BIT);
 
-        for (GUIElement[] line : gameLogic.getMap().getDrawMap()) {
-            for (GUIElement cell : line) {
-                drawElement(cell);
+        try {
+            for (GUIElement[] line : gameLogic.getMap().getDrawMap()) {
+                for (GUIElement cell : line) {
+                    drawElement(cell);
+                }
             }
-        }
-        //drawNumber("38", CELL_SIZE * 5, CELL_SIZE * 3 + CELL_SIZE*0.1f, CELL_SIZE*0.5f, CELL_SIZE*0.8f, 0, 0, 0);
-        for (GUIElement mob : gameLogic.getMonsters()) {
-            drawElement(mob);
-        }
-        //gameLogic.getBuildings().stream().map((p)->drawElement(p)).close();
-        for (GUIElement mob : gameLogic.getBuildings()) {
-            drawElement(mob);
+            //drawNumber("38", CELL_SIZE * 5, CELL_SIZE * 3 + CELL_SIZE*0.1f, CELL_SIZE*0.5f, CELL_SIZE*0.8f, 0, 0, 0);
+            for (GUIElement mob : gameLogic.getMonsters()) {
+                drawElement(mob);
+            }
+            //gameLogic.getBuildings().stream().map((p)->drawElement(p)).close();
+            for (GUIElement build : gameLogic.getBuildings()) {
+                drawElement(build);
+            }
+        } catch (Exception ex) {
+            System.out.println("In GUI render "+ex.getMessage());
         }
     }
 
