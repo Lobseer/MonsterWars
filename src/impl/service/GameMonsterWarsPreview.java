@@ -6,10 +6,7 @@ import impl.model.buildings.BaseBuilding;
 import impl.model.buildings.Spawner;
 import impl.model.monster.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -20,78 +17,56 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 public class GameMonsterWarsPreview implements GameService {
+    ///Размеры игрового поля в ячейках
+    public static final int CELLS_COUNT_X = 23;
+    public static final int CELLS_COUNT_Y = 13;
 
-    private GameMap map;
-    private Character userChar;
-    private List<BaseMonster> monsters = new CopyOnWriteArrayList<>();
-    private List<BaseBuilding> buildings = new CopyOnWriteArrayList<>();
+    //Игровые коэффициенты
+    public static final float GAME_SPEED_RATIO = 1f;
+    public static final float MOUNTEIN_RATIO = 0.07f;
+    public static final float WATER_RATIO = 0.1f;
 
-    public List<MobsStatus> gameStats = new ArrayList<>();
+    ///Константы параметров персонажей
+    private final BaseMonster skeleton = new Skeleton(this, 25, 0.7f * GAME_SPEED_RATIO, 3, 0.8f * GAME_SPEED_RATIO, 2, 4);
+    private final BaseMonster pig = new Pig(this, 10, 1.3f * GAME_SPEED_RATIO, 1, 1.5f * GAME_SPEED_RATIO, 2);
+    private final BaseMonster murloc = new Murloc(this, 12, 1f * GAME_SPEED_RATIO, 2, 1f * GAME_SPEED_RATIO, 0, 3);
+    private final BaseMonster hawk = new Hawk(this, 5, 2f * GAME_SPEED_RATIO, 10, 0.5f * GAME_SPEED_RATIO, 2, 5);
+
 
     public GameMonsterWarsPreview() {
-        map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y, 8, 12);
+        map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y,
+                (int)(CELLS_COUNT_X*CELLS_COUNT_Y * MOUNTEIN_RATIO),
+                (int)(CELLS_COUNT_X*CELLS_COUNT_Y * WATER_RATIO));
+        monsters = new CopyOnWriteArrayList<>();
+        buildings = new CopyOnWriteArrayList<>();
 
-        //startNewGame();
+        startNewGame();
         //generateManikens(10);
         //generateRandomMonsters(skeleton, 3);
         //generateRandomMonsters(pig, 10);
-        startNewGame();
     }
 
+    //Начальное состояние игры
     @Override
     public void startNewGame() {
-        new Spawner(this, Sprite.SPAWN3, new Vector2Int(1, 1), 100, pig, 7, 5);
-        new Spawner(this, Sprite.SPAWN1, new Vector2Int(CELLS_COUNT_X - 2, CELLS_COUNT_Y - 2), 100, skeleton, 15, 2);
+        createSpawner(skeleton, 2, 10f * GAME_SPEED_RATIO, new Vector2Int(CELLS_COUNT_X - 2, CELLS_COUNT_Y - 2));
+        createSpawner(pig, 10, 5f * GAME_SPEED_RATIO, new Vector2Int(1, 1));
+        createSpawner(murloc, 7, 3f * GAME_SPEED_RATIO, new Vector2Int(1, CELLS_COUNT_Y - 2));
+        createSpawner(hawk, 3, 7f * GAME_SPEED_RATIO, new Vector2Int(CELLS_COUNT_X - 2, 1));
     }
 
-    /*
-    public GameMonsterWarsPreview(Character player) {
-        map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y, 8, 12);
-        userChar = player;
-    }
-    */
-
-    private void generateRandomMonsters(BaseMonster prototype, int count) {
-        BaseMonster mob;
-        for (int i = 0; i < count; i++) {
-            mob = prototype.clone();
-            monsters.add(mob);
-            mob.setStartPosition(getRandomPosition());
-
-            Thread thread = new Thread(mob, mob.getClass().getSimpleName() + ": " + i);
-            mob.mobThread = thread;
-            thread.start();
-        }
-    }
-
-    private void generateManikens(int count) {
-        BaseMonster monster;
-        for(int i=0; i<count; i++) {
-            monster = new Pig(this, 10, 0, 0, 0, 0);
-            monster.setStartPosition(getRandomPosition());
-            monsters.add(monster);
-        }
-    }
-
-    private Vector2Int getRandomPosition() {
-        Random rnd = new Random();
-        Vector2Int result;
-        do {
-            result= new Vector2Int(1+rnd.nextInt(CELLS_COUNT_X - 3), rnd.nextInt(1+CELLS_COUNT_Y - 3));
-        } while (map.getTile(result)!=Sprite.GRASS || map.isOccupied(result));
-        return result;
-    }
-
+    //не реализовано
     @Override
     public void update() {
 
     }
 
-    public MobsStatus getCharacterStatus(Class mobType)
-    {
-        return gameStats.stream().filter((p)->p.type == mobType).findAny().get();
+    public GameMonsterWarsPreview(Character player) {
+        map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y, 8, 12);
+        userChar = player;
     }
 
+    // геттеры
     @Override
     public Character getUserCharacter() {
         return userChar;
@@ -112,36 +87,73 @@ public class GameMonsterWarsPreview implements GameService {
         return map;
     }
 
+    //Колекции содержащие игровые объекты
+    private GameMap map;
+    private Character userChar;
+    private List<BaseMonster> monsters;
+    private List<BaseBuilding> buildings;
 
+    //Методы содания игровых обьектов
+    private void createSpawner(BaseMonster mob, int mobMaxCount, float spawnSpeed, Vector2Int position) {
+        Spawner spawn;
+        Thread spawnThread;
 
-    /*
-    private static final Character generateRandomUserCharacter() {
-        Character result;
-        Random r = new Random();
-        if(r.nextInt(2) == 0) {
-            result = new Angel(ANGEL_HEALTH, ANGEL_POWER, ANGEL_MOVE_DISTANCE, ANGEL_ATTACK_DISTANCE);
-        } else {
-            result = new Warrior(WARRIOR_HEALTH, WARRIOR_POWER, WARRIOR_MOVE_DISTANCE, WARRIOR_ATTACK_DISTANCE);
+        Sprite spawnSprite;
+        switch (mob.getSprite()) {
+            case PIG:
+                spawnSprite = Sprite.SPAWN_PIG;
+                break;
+            case SKELETON:
+                spawnSprite = Sprite.SPAWN_SKELETON;
+                break;
+            case MURLOC:
+                spawnSprite = Sprite.SPAWN_MURLOC;
+                break;
+            case HAVK:
+                spawnSprite = Sprite.SPAWN_HAWK;
+                break;
+            default:
+                spawnSprite = Sprite.BUILDING;
         }
-        if(result.canMove()) {
-            ((Movable) result).moveTo(new Point(0, 0));
+
+        spawn = new Spawner(this, spawnSprite, 100, mob, spawnSpeed, mobMaxCount);
+        spawn.setStartPosition(position);
+        buildings.add(spawn);
+        map.putCharacter(spawn, spawn.getPosition());
+        spawnThread = new Thread(spawn, "Spawner: " + spawn.getProtoClass().getSimpleName());
+        spawn.spawnThread = spawnThread;
+        spawnThread.start();
+    }
+
+    private void generateRandomMonsters(BaseMonster prototype, int count) {
+        BaseMonster mob;
+        for (int i = 0; i < count; i++) {
+            mob = prototype.clone();
+            monsters.add(mob);
+            mob.setStartPosition(getRandomPosition());
+
+            Thread thread = new Thread(mob, mob.getClass().getSimpleName() + ": " + i);
+            mob.mobThread = thread;
+            thread.start();
         }
+    }
+
+    private void generateManikens(int count) {
+        BaseMonster monster;
+        for (int i = 0; i < count; i++) {
+            monster = new Pig(this, 10, 0, 0, 0, 0);
+            monster.setStartPosition(getRandomPosition());
+            monsters.add(monster);
+        }
+    }
+
+    private Vector2Int getRandomPosition() {
+        Random rnd = new Random();
+        Vector2Int result;
+        do {
+            result = new Vector2Int(1 + rnd.nextInt(CELLS_COUNT_X - 3), rnd.nextInt(1 + CELLS_COUNT_Y - 3));
+        } while (map.getTile(result) != Sprite.GRASS || map.isOccupied(result));
         return result;
-    }*/
+    }
 
-    ///Размер игровой ячейки
-    public static final int CELL_SIZE = 50;
-
-    ///Размеры игрового поля в ячейках
-    public static final int CELLS_COUNT_X = 13;
-    public static final int CELLS_COUNT_Y = 13;
-
-    ///Константы для создания окна, названия достаточно говорящие.
-    public static final int SCREEN_WIDTH = CELLS_COUNT_X * CELL_SIZE;
-    public static final int SCREEN_HEIGHT = CELLS_COUNT_Y * CELL_SIZE;
-    public static final String SCREEN_NAME = "My Game";
-
-    ///Константы параметров персонажей
-    private final BaseMonster skeleton = new Skeleton(this, 25, 0.5f, 3, 0.8f, 2, 4);
-    private final BaseMonster pig = new Pig(this, 10, 1f, 1, 1.5f, 3);
 }

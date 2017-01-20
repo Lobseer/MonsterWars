@@ -14,7 +14,7 @@ import java.util.List;
  * @author lobseer
  * @version 02.01.2017
  */
-
+/*
 public class GameWaveFinding implements GameService {
     private GameMap map;
     private Character userChar;
@@ -110,4 +110,4 @@ public class GameWaveFinding implements GameService {
     public static final int SCREEN_WIDTH = CELLS_COUNT_X * CELL_SIZE;
     public static final int SCREEN_HEIGHT = CELLS_COUNT_Y * CELL_SIZE;
     public static final String SCREEN_NAME = "My Game";
-}
+}*/

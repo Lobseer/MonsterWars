@@ -91,7 +91,7 @@ public class Vector2Int implements Cloneable{
 
     public static Vector2Int getRandomDirection() {
         Random rnd = new Random();
-        switch (rnd.nextInt(8)) {
+        switch (rnd.nextInt(4)) {
             case 0: return RIGHT;
             case 1: return LEFT;
             case 2: return UP;

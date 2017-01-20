@@ -13,16 +13,18 @@ import impl.model.weapons.BaseWeapon;
 import impl.model.weapons.MaleAttack;
 import impl.service.Vector2Int;
 
-import static impl.service.GameMonsterWarsPreview.*;
+import static impl.service.GameMonsterWarsPreview.CELLS_COUNT_X;
+import static impl.service.GameMonsterWarsPreview.CELLS_COUNT_Y;
+import static impl.service.GUI.CELL_SIZE;
 
 /**
- * Class description
+ * Basic class for all movable characters
  *
  * @author lobseer
  * @version 31.12.2016
  */
 public abstract class BaseCharacter implements Character, Movable, GUIElement {
-    protected volatile float health;
+    private volatile float health;
     protected float moveSpeed;
 
     protected BaseWeapon weapon;
@@ -41,7 +43,7 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
         this.armorType = ArmorType.NO_ARMOR;
     }
 
-    protected BaseCharacter(GameService gameService, Sprite icon, float health, float moveSpeed, BaseWeapon weapon, ArmorType armorType ) {
+    protected BaseCharacter(GameService gameService, Sprite icon, float health, float moveSpeed, BaseWeapon weapon, ArmorType armorType) {
         this.health = health;
         this.moveSpeed = moveSpeed;
         this.weapon = weapon;
@@ -51,27 +53,26 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
     }
 
     @Override
-    public final void modifyHealth(float val) {
+    public synchronized final void modifyHealth(float val) {
+        if (isDead()) return;
         this.health += val;
-        if(isDead())
+        if (isDead())
             die();
     }
 
     @Override
     public void takeAction(CharacterAction action) {
-        if(action!=null)
+        if (action != null)
             action.doAction(this);
     }
 
     protected final boolean isEnemy(Character character) {
-        if(character instanceof Spawner) {
-            Class home = ((Spawner)character).getProtoClass();
-            if(this.getClass().isAssignableFrom(home)) return false;
+        if (character instanceof Spawner) {
+            Class home = ((Spawner) character).getProtoClass();
+            if (this.getClass().isAssignableFrom(home)) return false;
         }
         return !this.getClass().isAssignableFrom(character.getClass());
     }
-
-    public abstract void die();
 
     @Override
     public final float getHealth() {
@@ -89,17 +90,17 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
     }
 
     public final int getAttackPower() {
-        if(weapon!=null) return this.weapon.getAttackPower();
+        if (weapon != null) return this.weapon.getAttackPower();
         return 1;
     }
 
     public final float getAttackSpeed() {
-        if(weapon!=null) return this.weapon.getAttackSpeed();
+        if (weapon != null) return this.weapon.getAttackSpeed();
         return 1;
     }
 
     public final int getAttackRange() {
-        if(weapon!=null) return this.weapon.getAttackRange();
+        if (weapon != null) return this.weapon.getAttackRange();
         return 1;
     }
 
@@ -108,63 +109,66 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
         return position;
     }
 
+    @Override
     public final void setStartPosition(Vector2Int position) {
-        if(position!= null) {
-            this.position = position;
-            gameService.getMap().putCharacter(this, position);
-        }
+        if (position == null) throw new NullPointerException();
+        this.position = position;
+        gameService.getMap().putCharacter(this, position);
     }
 
     @Override
     public final boolean canMoveTo(Vector2Int point) {
-        if(point.x < 0 || point.x >= CELLS_COUNT_X || point.y < 0 || point.y >= CELLS_COUNT_Y) return false;
+        if (point.x < 0 || point.x >= CELLS_COUNT_X || point.y < 0 || point.y >= CELLS_COUNT_Y) return false;
         Sprite tile = gameService.getMap().getTile(point);
         switch (tile) {
-            case HIGHT_MOUNTAIN: return false;
+            case HIGHT_MOUNTAIN:
+                return false;
             case MOUNTAIN:
-                if(!canFly()) return false;
+                if (!canFly()) return false;
             case WATER:
-                if(!(canFly()||canSwim())) return false;
+                if (!(canFly() || canSwim())) return false;
         }
         return !gameService.getMap().isOccupied(point);
     }
 
     @Override
     public void moveTo(Vector2Int point) {
-        if(canMoveTo(point)) {
-            gameService.getMap().putCharacter(null, position);
-            this.position = point;
-            gameService.getMap().putCharacter(this, point);
-        }
+        gameService.getMap().putCharacter(null, position);
+        this.position = point;
+        gameService.getMap().putCharacter(this, point);
     }
 
     @Override
-    public boolean isDead() {
-        return health<=0;
+    public final boolean isDead() {
+        return health <= 0;
     }
 
     @Override
-    public void receiveClick() {
-        System.out.println(this.getClass().getSimpleName()+": "+position);
+    public abstract void die();
+
+    //GUI
+    @Override
+    public final void receiveClick() {
+        System.out.println(this.getClass().getSimpleName() + ": " + position);
     }
 
     @Override
-    public int getWidth() {
+    public final int getWidth() {
         return CELL_SIZE;
     }
 
     @Override
-    public int getHeight() {
+    public final int getHeight() {
         return CELL_SIZE;
     }
 
     @Override
-    public int getRenderY() {
+    public final int getRenderY() {
         return position.y * getHeight();
     }
 
     @Override
-    public int getRenderX() {
+    public final int getRenderX() {
         return position.x * getWidth();
     }
 
@@ -175,6 +179,6 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
 
     @Override
     public String toString() {
-        return String.format("%1s: position=%2s",this.getClass().getSimpleName(), position);
+        return String.format("%1s: position=%2s", this.getClass().getSimpleName(), position);
     }
 }

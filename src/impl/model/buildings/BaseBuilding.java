@@ -7,27 +7,26 @@ import api.model.ArmorType;
 import api.model.Character;
 import impl.service.Vector2Int;
 
-import static impl.service.GameMonsterWarsPreview.*;
+import static impl.service.GUI.CELL_SIZE;
 
 /**
- * Class description
+ * Basic class for all buildings. Which can't move and have special armor type and activity.
  *
  * @author lobseer
  * @version 14.12.2016
  */
 
 public abstract class BaseBuilding implements Character, GUIElement, AutoCloseable {
-    private float health;
+    private volatile float health;
 
     protected Vector2Int position;
     protected GameService gameService;
     private Sprite icon;
 
-    protected BaseBuilding(GameService gameService, Sprite icon, Vector2Int position, float health) {
+    protected BaseBuilding(GameService gameService, Sprite icon, float health) {
         this.gameService = gameService;
         this.icon = icon;
         this. health = health;
-        this.position = position;
     }
 
     @Override
@@ -57,6 +56,15 @@ public abstract class BaseBuilding implements Character, GUIElement, AutoCloseab
         return position;
     }
 
+    @Override
+    public final void setStartPosition(Vector2Int position) {
+        if(position!= null) {
+            this.position = position;
+            gameService.getMap().putCharacter(this, position);
+        }
+    }
+
+    //GUI
     @Override
     public void receiveClick() {
         System.out.println(this.getClass().getSimpleName()+": "+position);

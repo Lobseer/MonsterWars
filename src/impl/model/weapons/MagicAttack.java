@@ -10,7 +10,7 @@ public class MagicAttack extends BaseWeapon {
         super(2, 2, 2);
     }
 
-    public MagicAttack(int attackPower, int attackSpeed, int attackRange) {
+    public MagicAttack(int attackPower, float attackSpeed, int attackRange) {
         super(attackPower, attackSpeed, attackRange);
     }
 

@@ -14,7 +14,7 @@ import impl.service.Vector2Int;
 import impl.service.Sprite;
 
 import java.util.Arrays;
-
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Class description
@@ -28,10 +28,12 @@ public abstract class BaseMonster extends BaseCharacter implements Monster, Runn
     private MonsterState state = new WalkState();
 
     public Thread mobThread;
+    private AtomicInteger counter;
 
-    public final void changeState(MonsterState newState) {
-        if (newState != null)
-            state = newState;
+    public void setCounter(AtomicInteger counter) {
+        if (counter != null) {
+            this.counter = counter;
+        }
     }
 
     protected BaseMonster(GameService gameService) {
@@ -45,6 +47,11 @@ public abstract class BaseMonster extends BaseCharacter implements Monster, Runn
     }
 
     @Override
+    public final int getAggressionDistance() {
+        return aggressionDistance;
+    }
+
+    @Override
     public final boolean canDoAction(CharacterAction action) {
         //if(canFly(action.getActionTarget()) && ! canFly(this)) {
         //    return false;
@@ -53,54 +60,76 @@ public abstract class BaseMonster extends BaseCharacter implements Monster, Runn
     }
 
     @Override
-    public final void attack(Character character) {
-        character.takeAction(weapon.getAction());
+    public final void attack(Character target) {
+        target.takeAction(weapon.getAction());
     }
 
-    @Override
-    public final int getAggressionDistance() {
-        return aggressionDistance;
-    }
 
-    @Override
-    public final void die() {
-        gameService.getMap().putCharacter(null, position);
-        gameService.getMonsters().remove(this);
-        gameService.getCharacterStatus(this.getClass()).count--;
-        if (mobThread != null) close();
+    private void changeState(MonsterState newState) {
+        if (newState != null)
+            state = newState;
     }
 
     @Override
     public Character searchEnemy(int radius) {
         int x, y;
         Character target;
-        //for(int circle = 1; circle<=radius; circle++) {
-        //    for (int i = -circle; i<=circle; i++){
-        //        for(int j = -circle; j<=circle; j++) {
-        //            if(i==0 && j==0);
-        //        }
-        //    }
-        //}
 
-        for (int i = -radius; i <= radius; i++) {
-            x = position.x + i;
-            if (x > 0 && x < CELLS_COUNT_X) {
-                for (int j = -radius; j <= radius; j++) {
-                    y = position.y + j;
-                    if (y > 0 && y < CELLS_COUNT_Y) {
+        for (int circle = 1; circle <= radius; circle++) {
+
+            y = position.y - circle;
+            if (y >= 0 && y < CELLS_COUNT_Y)
+                for (int i = -circle; i <= circle; i++) {
+                    x = position.x + i;
+                    if (x >= 0 && x < CELLS_COUNT_X) {
                         target = gameService.getMap().getCell(new Vector2Int(x, y)).getCharacter();
-                        if (target != null && isEnemy(target)) {
-                            return target;
-                        }
+                        if (target != null && isEnemy(target)) return target;
                     }
                 }
-            }
+
+            x = position.x + circle;
+            if (x >= 0 && x < CELLS_COUNT_X)
+                for (int i = -circle + 1; i <= circle; i++) {
+                    y = position.y + i;
+                    if (y >= 0 && y < CELLS_COUNT_Y) {
+                        target = gameService.getMap().getCell(new Vector2Int(x, y)).getCharacter();
+                        if (target != null && isEnemy(target)) return target;
+                    }
+                }
+
+            y = position.y + circle;
+            if (y >= 0 && y < CELLS_COUNT_Y)
+                for (int i = circle - 1; i >= -circle; i--) {
+                    x = position.x + i;
+                    if (x >= 0 && x < CELLS_COUNT_X) {
+                        target = gameService.getMap().getCell(new Vector2Int(x, y)).getCharacter();
+                        if (target != null && isEnemy(target)) return target;
+                    }
+                }
+
+            x = position.x - circle;
+            if (x >= 0 && x < CELLS_COUNT_X)
+                for (int i = circle - 1; i >= -circle + 1; i--) {
+                    y = position.y + i;
+                    if (y >= 0 && y < CELLS_COUNT_Y) {
+                        target = gameService.getMap().getCell(new Vector2Int(x, y)).getCharacter();
+                        if (target != null && isEnemy(target)) return target;
+                    }
+                }
         }
         return null;
     }
 
     @Override
     public abstract BaseMonster clone();
+
+    @Override
+    public final void die() {
+        gameService.getMap().putCharacter(null, position);
+        gameService.getMonsters().remove(this);
+        System.out.printf("%1s count = %2s\n", getClass().getSimpleName(), counter.incrementAndGet());
+        if (mobThread != null) close();
+    }
 
     @Override
     public void close() {
@@ -117,9 +146,9 @@ public abstract class BaseMonster extends BaseCharacter implements Monster, Runn
             }
 
         } catch (InterruptedException ex) {
-            System.out.printf("Ex \"%1s\"; class: %2s; thread: %3s\n", ex.getMessage(), this.getClass().getSimpleName(), Thread.currentThread().getName());
+            System.out.printf("Ex \"%1s\"; thread: %2s\n", ex.getMessage(), Thread.currentThread().getName());
         } catch (Exception ex) {
-            System.out.println("In Monster "+ex.getMessage());
+            System.out.println("In Monster " + ex.getMessage());
         }
     }
 

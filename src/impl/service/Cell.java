@@ -1,6 +1,6 @@
 package impl.service;
 
-import static impl.service.GameMonsterWarsPreview.CELL_SIZE;
+import static impl.service.GUI.CELL_SIZE;
 
 import api.service.GUIElement;
 import api.model.Character;

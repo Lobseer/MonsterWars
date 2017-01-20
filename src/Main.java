@@ -35,13 +35,14 @@ public class Main {
     static void input() throws Exception {
         ///Если за последний такт произошли какие-то события с мышью,
         ///перебираем их по очереди
+        /*
         while(Mouse.next()){
             ///Если это было нажатие кнопки мыши, а не
             ///перемещение...
             if(Mouse.getEventButton()>=0 && Mouse.getEventButtonState()){
                 gameService.getMap().receiveClick(Mouse.getEventX(), Mouse.getEventY(), Mouse.getEventButton());
             }
-        }
+        }*/
 
         ///То же самое с клавиатурой
         while(Keyboard.next()){
@@ -84,8 +85,6 @@ public class Main {
             for(AutoCloseable mob : gameService.getMonsters()) {
                 mob.close();
             }
-
-            System.out.println("----------------------------------");
         }
     }
 }

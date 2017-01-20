@@ -7,7 +7,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 
-import static impl.service.GameMonsterWarsPreview.*;
+import static impl.service.GameMonsterWarsPreview.CELLS_COUNT_X;
+import static impl.service.GameMonsterWarsPreview.CELLS_COUNT_Y;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -18,6 +19,15 @@ import static org.lwjgl.opengl.GL11.*;
  */
 
 public class GUI {
+    ///Размер игровой ячейки
+    public static final int CELL_SIZE = 50;
+
+    ///Константы для создания окна
+    public static final int SCREEN_WIDTH = CELLS_COUNT_X * CELL_SIZE;
+    public static final int SCREEN_HEIGHT = CELLS_COUNT_Y * CELL_SIZE;
+    public static final String SCREEN_NAME = "My Game";
+
+    //Игровой сервис
     private static GameService gameLogic;
 
     public static void init() {

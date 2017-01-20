@@ -11,6 +11,8 @@ import impl.model.weapons.MaleAttack;
  */
 public class Pig extends BaseMonster implements Npc {
 
+    public static volatile int count = 0;
+
     public Pig(GameService area) {
         super(area);
     }
@@ -21,6 +23,6 @@ public class Pig extends BaseMonster implements Npc {
 
     @Override
     public Pig clone() {
-        return new Pig(gameService, health, moveSpeed, getAttackPower(), getAttackSpeed(), getAggressionDistance());
+        return new Pig(gameService, getHealth(), moveSpeed, getAttackPower(), getAttackSpeed(), getAggressionDistance());
     }
 }

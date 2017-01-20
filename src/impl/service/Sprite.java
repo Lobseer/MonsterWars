@@ -13,19 +13,18 @@ import java.io.*;
  */
 
 public enum Sprite {
-    ///Файлы с именами circle и cherries должны лежать по адресу
     /// %папка проекта%/res/ в расширении .png
     GRASS("tile_grass"), WATER("tile_water"), MOUNTAIN("tile_mountain"), HIGHT_MOUNTAIN("tile_high_mountain"),
-    BUILDING("tile_building") , SPAWN1("tile_spawn_monster_1"), SPAWN2("tile_spawn_monster_2"), SPAWN3("tile_spawn_monster_3"),
-    MONSTER("monster"), SKELETON("skeleton"), PIG("pig"),
+    BUILDING("tile_building") , SPAWN_PIG("Pig_Spawner"), SPAWN_SKELETON("Skeleton_Spawner"), SPAWN_MURLOC("Murloc_Spawner"), SPAWN_HAWK("Hawk_Spawner"),
+    MONSTER("monster"), SKELETON("skeleton"), PIG("pig"), MURLOC("murloc"), HAVK("hawk"),
     N0("n0"),N1("n1"),N2("n2"),N3("n3"),N4("n4"),N5("n5"),N6("n6"),N7("n7"),N8("n8"),N9("n9"),
     ERROR("error");
 
     private Texture texture;
 
-    Sprite(String texturename){
+    Sprite(String textureName){
         try {
-            this.texture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/"+texturename+".png")));
+            this.texture = TextureLoader.getTexture("PNG", new FileInputStream(new File("res/"+textureName+".png")));
         } catch (IOException e) {
             e.printStackTrace();
         }

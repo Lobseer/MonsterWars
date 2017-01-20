@@ -16,11 +16,17 @@ import impl.service.Vector2Int;
 public interface Character {
     boolean canDoAction(CharacterAction action);
     void takeAction(CharacterAction action);
+
     float getHealth();
     void modifyHealth(float val);
+
     ArmorType getArmor();
+
     Vector2Int getPosition();
+    void setStartPosition(Vector2Int position);
+
     boolean isDead();
+    void die();
 
     default boolean isNpc() {
         return Npc.class.isAssignableFrom(this.getClass());

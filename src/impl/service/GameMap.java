@@ -3,11 +3,8 @@ package impl.service;
 import api.service.GUIElement;
 import api.model.Character;
 
-import java.sql.Array;
-import java.util.Arrays;
 import java.util.Random;
-
-import static impl.service.GameMonsterWarsPreview.*;
+import static impl.service.GUI.CELL_SIZE;
 
 /**
  * Class description
@@ -45,11 +42,17 @@ public class GameMap {
         }
     }
 
+    private void highMountainGen() {
+        for(int i = 0; i<map.length; i++) {
+            setTile(getRandomPosition(),Sprite.MOUNTAIN);
+        }
+    }
+
     private Vector2Int getRandomPosition() {
         Random rnd = new Random();
         Vector2Int result;
         do {
-            result= new Vector2Int(1+rnd.nextInt(map.length - 3), rnd.nextInt(1+map[1].length - 3));
+            result= new Vector2Int(rnd.nextInt(map.length), rnd.nextInt(map[1].length));
         } while (getTile(result)!=Sprite.GRASS || isOccupied(result));
         return result;
     }
