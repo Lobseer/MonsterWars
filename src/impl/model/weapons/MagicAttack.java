@@ -1,6 +1,7 @@
 package impl.model.weapons;
 
-import api.model.*;
+
+import api.model.AttackType;
 
 /**
  * Created by denis.selutin on 5/29/2015.
@@ -10,7 +11,7 @@ public class MagicAttack extends BaseWeapon {
         super(2, 2, 2);
     }
 
-    public MagicAttack(int attackPower, float attackSpeed, int attackRange) {
+    public MagicAttack(float attackPower, float attackSpeed, int attackRange) {
         super(attackPower, attackSpeed, attackRange);
     }
 

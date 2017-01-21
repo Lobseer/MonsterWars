@@ -5,7 +5,6 @@ import impl.service.Sprite;
 // impl.service.GameMonsterWarsPreview;
 import impl.service.Vector2Int;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import static impl.service.GameMonsterWarsPreview.*;

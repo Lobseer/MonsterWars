@@ -11,13 +11,11 @@ import impl.model.weapons.MaleAttack;
  */
 public class Pig extends BaseMonster implements Npc {
 
-    public static volatile int count = 0;
-
     public Pig(GameService area) {
         super(area);
     }
 
-    public Pig(GameService area, float health, float speed, int attackPower, float attackSpeed, int aggresiveDistance) {
+    public Pig(GameService area, float health, float speed, float attackPower, float attackSpeed, int aggresiveDistance) {
         super(area, Sprite.PIG, health, speed, new MaleAttack(attackPower, attackSpeed), ArmorType.NO_ARMOR, aggresiveDistance);
     }
 

@@ -10,7 +10,7 @@ public class MaleAttack extends BaseWeapon {
         super(1, 1, 1);
     }
 
-    public MaleAttack(int attackPower, float attackSpeed) {
+    public MaleAttack(float attackPower, float attackSpeed) {
         super(attackPower, attackSpeed, 1);
     }
 

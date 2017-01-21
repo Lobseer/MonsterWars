@@ -10,11 +10,11 @@ import api.model.actions.CharacterAction;
  * @version 31.12.2016
  */
 public abstract class BaseWeapon {
-    protected int attackPower;
+    protected float attackPower;
     protected float attackSpeed;
     protected int attackRange;
 
-     protected BaseWeapon(int attackPower, float attackSpeed, int attackRange) {
+    protected BaseWeapon(float attackPower, float attackSpeed, int attackRange) {
         this.attackPower = attackPower;
         this.attackSpeed = attackSpeed;
         this.attackRange = attackRange;
@@ -22,7 +22,7 @@ public abstract class BaseWeapon {
 
     public abstract AttackType getAttackType();
 
-    public final int getAttackPower() {
+    public final float getAttackPower() {
         return this.attackPower;
     }
 
@@ -32,6 +32,21 @@ public abstract class BaseWeapon {
 
     public final int getAttackRange() {
         return this.attackRange;
+    }
+
+    public void setAttackPower(float attackPower) {
+        if(attackPower<0) throw new IllegalArgumentException();
+        this.attackPower = attackPower;
+    }
+
+    public void setAttackSpeed(float attackSpeed) {
+        if(attackSpeed<0) throw new IllegalArgumentException();
+        this.attackSpeed = attackSpeed;
+    }
+
+    public void setAttackRange(int attackRange) {
+        if(attackRange<0) throw new IllegalArgumentException();
+        this.attackRange = attackRange;
     }
 
     public CharacterAction getAction() {

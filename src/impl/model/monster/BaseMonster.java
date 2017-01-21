@@ -41,7 +41,7 @@ public abstract class BaseMonster extends BaseCharacter implements Monster, Runn
         this.aggressionDistance = 3;
     }
 
-    protected BaseMonster(GameService area, Sprite icon, float health, float speed, BaseWeapon weapon, ArmorType armorType, int aggressionDistance) {
+    public BaseMonster(GameService area, Sprite icon, float health, float speed, BaseWeapon weapon, ArmorType armorType, int aggressionDistance) {
         super(area, icon, health, speed, weapon, armorType);
         this.aggressionDistance = aggressionDistance;
     }

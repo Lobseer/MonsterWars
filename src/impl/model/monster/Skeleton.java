@@ -19,7 +19,7 @@ public class Skeleton extends BaseMonster {
         super(area);
     }
 
-    public Skeleton(GameService area, float health, float speed, int attackPower, float attackSpeed, int attackRange, int aggresiveDistance) {
+    public Skeleton(GameService area, float health, float speed, float attackPower, float attackSpeed, int attackRange, int aggresiveDistance) {
         super(area, Sprite.SKELETON, health, speed, new RangeAttack(attackPower, attackSpeed , attackRange), ArmorType.HEAVY, aggresiveDistance);
     }
 

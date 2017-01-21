@@ -15,6 +15,7 @@ import impl.service.Vector2Int;
 
 import static impl.service.GameMonsterWarsPreview.CELLS_COUNT_X;
 import static impl.service.GameMonsterWarsPreview.CELLS_COUNT_Y;
+import static impl.service.GameMonsterWarsPreview.GAME_SPEED_RATIO;
 import static impl.service.GUI.CELL_SIZE;
 
 /**
@@ -45,11 +46,12 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
 
     protected BaseCharacter(GameService gameService, Sprite icon, float health, float moveSpeed, BaseWeapon weapon, ArmorType armorType) {
         this.health = health;
-        this.moveSpeed = moveSpeed;
         this.weapon = weapon;
         this.icon = icon;
         this.gameService = gameService;
         this.armorType = armorType;
+        this.moveSpeed = moveSpeed * GAME_SPEED_RATIO;
+        this.weapon.setAttackSpeed(this.weapon.getAttackSpeed()*GAME_SPEED_RATIO);
     }
 
     @Override
@@ -89,7 +91,7 @@ public abstract class BaseCharacter implements Character, Movable, GUIElement {
         return this.moveSpeed;
     }
 
-    public final int getAttackPower() {
+    public final float getAttackPower() {
         if (weapon != null) return this.weapon.getAttackPower();
         return 1;
     }

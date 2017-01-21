@@ -20,7 +20,7 @@ public class Hawk extends BaseMonster implements Flying{
         super(area);
     }
 
-    public Hawk(GameService area, float health, float speed, int attackPower, float attackSpeed, int attackRange, int aggresiveDistance) {
+    public Hawk(GameService area, float health, float speed, float attackPower, float attackSpeed, int attackRange, int aggresiveDistance) {
         super(area, Sprite.HAVK, health, speed, new MagicAttack(attackPower, attackSpeed , attackRange), ArmorType.LIGHT, aggresiveDistance);
     }
 

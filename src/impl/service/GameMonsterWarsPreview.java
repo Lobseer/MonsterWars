@@ -18,24 +18,24 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameMonsterWarsPreview implements GameService {
     ///Размеры игрового поля в ячейках
-    public static final int CELLS_COUNT_X = 23;
+    public static final int CELLS_COUNT_X = 18;
     public static final int CELLS_COUNT_Y = 13;
 
     //Игровые коэффициенты
     public static final float GAME_SPEED_RATIO = 1f;
-    public static final float MOUNTEIN_RATIO = 0.07f;
+    public static final float MOUNTAIN_RATIO = 0.07f;
     public static final float WATER_RATIO = 0.1f;
 
-    ///Константы параметров персонажей
-    private final BaseMonster skeleton = new Skeleton(this, 25, 0.7f * GAME_SPEED_RATIO, 3, 0.8f * GAME_SPEED_RATIO, 2, 4);
-    private final BaseMonster pig = new Pig(this, 10, 1.3f * GAME_SPEED_RATIO, 1, 1.5f * GAME_SPEED_RATIO, 2);
-    private final BaseMonster murloc = new Murloc(this, 12, 1f * GAME_SPEED_RATIO, 2, 1f * GAME_SPEED_RATIO, 0, 3);
-    private final BaseMonster hawk = new Hawk(this, 5, 2f * GAME_SPEED_RATIO, 10, 0.5f * GAME_SPEED_RATIO, 2, 5);
+    ///Константы параметров персонажей                      hp    m_spd   dmg  at_spd   at_rng  agr_rng
+    private final BaseMonster skeleton = new Skeleton(this, 35,   0.6f,   3,    0.8f,      2,     4);
+    private final BaseMonster pig = new Pig          (this, 10,   1.3f,   1,    1.5f,             2);
+    private final BaseMonster murloc = new Murloc    (this, 12,   1f,     2,    1f,               3);
+    private final BaseMonster hawk = new Hawk        (this, 5,    2f,     10,   0.5f,      2,     5);
 
 
     public GameMonsterWarsPreview() {
         map = new GameMap(CELLS_COUNT_X, CELLS_COUNT_Y,
-                (int)(CELLS_COUNT_X*CELLS_COUNT_Y * MOUNTEIN_RATIO),
+                (int)(CELLS_COUNT_X*CELLS_COUNT_Y * MOUNTAIN_RATIO),
                 (int)(CELLS_COUNT_X*CELLS_COUNT_Y * WATER_RATIO));
         monsters = new CopyOnWriteArrayList<>();
         buildings = new CopyOnWriteArrayList<>();
@@ -49,10 +49,11 @@ public class GameMonsterWarsPreview implements GameService {
     //Начальное состояние игры
     @Override
     public void startNewGame() {
-        createSpawner(skeleton, 2, 10f * GAME_SPEED_RATIO, new Vector2Int(CELLS_COUNT_X - 2, CELLS_COUNT_Y - 2));
-        createSpawner(pig, 10, 5f * GAME_SPEED_RATIO, new Vector2Int(1, 1));
-        createSpawner(murloc, 7, 3f * GAME_SPEED_RATIO, new Vector2Int(1, CELLS_COUNT_Y - 2));
-        createSpawner(hawk, 3, 7f * GAME_SPEED_RATIO, new Vector2Int(CELLS_COUNT_X - 2, 1));
+        //                      count    spawn_speed
+        createSpawner(skeleton,  5,         10f,       new Vector2Int(CELLS_COUNT_X - 2, CELLS_COUNT_Y - 2));
+        createSpawner(pig,       15,        5f,        new Vector2Int(1, 1));
+        createSpawner(murloc,    8,         3f,        new Vector2Int(1, CELLS_COUNT_Y - 2));
+        createSpawner(hawk,      3,         7f,        new Vector2Int(CELLS_COUNT_X - 2, 1));
     }
 
     //не реализовано

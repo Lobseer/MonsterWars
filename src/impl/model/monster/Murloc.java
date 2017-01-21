@@ -20,12 +20,12 @@ public class Murloc extends BaseMonster implements Swimming {
         super(area);
     }
 
-    public Murloc(GameService area, float health, float speed, int attackPower, float attackSpeed, int attackRange, int aggresiveDistance) {
+    public Murloc(GameService area, float health, float speed, float attackPower, float attackSpeed, int aggresiveDistance) {
         super(area, Sprite.MURLOC, health, speed, new MaleAttack(attackPower, attackSpeed), ArmorType.MEDIUM, aggresiveDistance);
     }
 
     @Override
     public Murloc clone() {
-        return new Murloc(gameService, getHealth(), moveSpeed, getAttackPower(), getAttackSpeed(), getAttackRange(), getAggressionDistance());
+        return new Murloc(gameService, getHealth(), moveSpeed, getAttackPower(), getAttackSpeed(), getAggressionDistance());
     }
 }
